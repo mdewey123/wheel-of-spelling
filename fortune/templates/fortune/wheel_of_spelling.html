@@ -1,0 +1,64 @@
+{% extends "fortune/layout.html" %}
+{% load static %}
+{% block body %}
+
+<div id="title">
+    <br>
+        <h1>WHEEL OF SPELLING</h1>
+        {% if user.is_authenticated %}
+        <div id="puzzle-list">
+            <ul>
+                {% if puzzles %}
+                {% for puzz in puzzles %}
+                <li data-puzzle="{{puzz.sentence}}">{{ puzz }}</li>
+                {% endfor %}
+                {% endif %}
+            </ul>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ newPuzz }}
+                <input type="submit" value="New Puzzle">
+            </form>
+        </div>
+        {% endif %}
+</div>
+
+<div id="game-board" class="row" data-puzzle="{{welcome_puzz.sentence}}">
+    {% for n in grid %}
+        <div id="{{n}}" class="col-1" meta-data="{{n}}">
+            <h4></h4>
+        </div>
+    {% endfor %}
+</div>
+
+<div id="game-pieces" class="row">
+    {% for n in consenants %}
+        <div class="col" meta-data="{{n}}">
+            <h4>{{n}}</h4>
+        </div>
+    {% endfor %}
+    <br><br>
+    <h3>Buy for 500 points:</h3>
+    {% for n in vowels %}
+    <div class="col-1" meta-data="{{n}}">
+        <h4>{{n}}</h4>
+    </div>
+    {% endfor %}
+</div>
+
+<div id="score-board" class="row">
+    <div class="col-1">
+        <button> Add team </button>
+        <button>Loose team</button>
+    </div>
+    <div class="col">
+        <h4>player 1</h4>
+    </div>
+    <div class="col">
+        <h4>player 2</h4>
+    </div>
+    <div class="col">
+        <h4>player 3</h4>
+    </div>
+</div>
+{% endblock %}
