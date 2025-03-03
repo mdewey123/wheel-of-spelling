@@ -25,7 +25,7 @@
 
 <div id="game-board" class="row" data-puzzle="{{welcome_puzz.sentence}}">
     {% for n in grid %}
-        <div id="{{n}}" class="col-1" meta-data="{{n}}">
+        <div id="{{n}}" class="col-1">
             <h4></h4>
         </div>
     {% endfor %}
@@ -33,7 +33,7 @@
 
 <div id="game-pieces" class="row">
     {% for n in consenants %}
-        <div class="col" meta-data="{{n}}">
+        <div class="col" data-letter="{{n}}">
             <h4>{{n}}</h4>
         </div>
     {% endfor %}
