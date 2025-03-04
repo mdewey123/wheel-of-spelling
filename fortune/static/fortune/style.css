@@ -54,3 +54,8 @@ body {
     background: white;
     
 }
+
+#game-wheel{
+    width: 30vw;
+    height: 3vh;
+}

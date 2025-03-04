@@ -23,6 +23,10 @@
         {% endif %}
 </div>
 
+<div id="game-wheel-container">
+    <canvas id="game-wheel"></canvas>
+</div>
+
 <div id="game-board" class="row" data-puzzle="{{welcome_puzz.sentence}}">
     {% for n in grid %}
         <div id="{{n}}" class="col-1">
