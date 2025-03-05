@@ -41,4 +41,29 @@ addEventListener("DOMContentLoaded", function() {
     populate_board(welcomePuzz)
     make_guess()
 
+    function wheel_spinner(){
+        const points = ["Lose a Turn", "250", "500", "600", "700", "1000", "2500", "5000", "Lose Points", 
+            "Lose a Turn", "250", "500", "600", "700", "1000", "2500", "5000", "Lose Points"];
+
+
+        const wheel = getElementById("game-wheel")
+        const ctx = wheel.getContext("2d")
+        const result = document.getElementById("result")
+
+        const spaces = points.length
+        const spaces_angle = (2 * Math.PI) / spaces
+
+        function draw_wheel() {
+            for(let i = 0; i < spaces; i++) {
+                ctx.moveTo(150,150)
+                ctx.arc(150, 150, 150, i * spaces_angle, (i + 1) * spaces_angle)
+                ctx.fillStyle = i % 2 === 0 ? "#ffcc00" : "#ff6600";
+                ctx.fill();
+                ctx.stroke();
+
+                
+            }
+        };
+    }
+
 });
