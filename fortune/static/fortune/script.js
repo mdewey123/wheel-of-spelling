@@ -42,28 +42,49 @@ addEventListener("DOMContentLoaded", function() {
     make_guess()
 
     function wheel_spinner(){
-        const points = ["Lose a Turn", "250", "500", "600", "700", "1000", "2500", "5000", "Lose Points", 
-            "Lose a Turn", "250", "500", "600", "700", "1000", "2500", "5000", "Lose Points"];
+        const points = ["Lose a Turn", "250", "500", "600", "700", "1000", "2500", "5000", "Lose Points", "Lose a Turn", "250", "500", "600", "700", "1000", "2500", "5000", "Lose Points"];
 
+        const wheel = document.getElementById("game-wheel-container");
+        const wheel_canvas = document.getElementById("game-wheel");
+        const ctx = wheel_canvas.getContext("2d");
+        const result = document.getElementById("result");
 
-        const wheel = getElementById("game-wheel")
-        const ctx = wheel.getContext("2d")
-        const result = document.getElementById("result")
+        const spaces = points.length;
+        const spaces_angle = (2 * Math.PI) / spaces;
+        let currentRotation = 0;
+        let spinAngleStart = 0;
+        let spinTime = 0;
+        let spinTimeTotal = 0;
 
-        const spaces = points.length
-        const spaces_angle = (2 * Math.PI) / spaces
+        const wheelSize = Math.min(window.innerWidth, window.innerHeight) * 0.4;
+        const centerX = wheelSize / 2;
+        const centerY = wheelSize / 2;
 
         function draw_wheel() {
-            for(let i = 0; i < spaces; i++) {
-                ctx.moveTo(150,150)
-                ctx.arc(150, 150, 150, i * spaces_angle, (i + 1) * spaces_angle)
+            wheel_canvas.width = wheelSize;
+            wheel_canvas.height = wheelSize;
+
+            for (let i = 0; i < spaces; i++) {
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, centerX * 0.95, i * spaces_angle, (i + 1) * spaces_angle);
                 ctx.fillStyle = i % 2 === 0 ? "#ffcc00" : "#ff6600";
                 ctx.fill();
                 ctx.stroke();
+                ctx.closePath();
 
-                
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(i * spaces_angle + spaces_angle / 2);
+                ctx.fillStyle = "black";
+                ctx.font = `${centerX * 0.1}px arial`;
+                ctx.textAlign = "left";
+                ctx.fillText(points[i], centerX * 0.35, 5);
+                ctx.restore();
             }
-        };
+        }
+        draw_wheel() 
     }
+    wheel_spinner()
 
 });

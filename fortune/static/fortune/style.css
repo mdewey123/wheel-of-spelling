@@ -55,7 +55,20 @@ body {
     
 }
 
-#game-wheel{
-    width: 30vw;
-    height: 3vh;
+#game-wheel-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    border: 2px solid red;
+}
+
+#waaaah {
+    color: red;
+}
+
+#game-wheel {
+    width: 500px;
+    height: 500px;
 }
