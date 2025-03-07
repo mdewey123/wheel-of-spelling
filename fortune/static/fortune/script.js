@@ -51,10 +51,7 @@ addEventListener("DOMContentLoaded", function() {
 
         const spaces = points.length;
         const spaces_angle = (2 * Math.PI) / spaces;
-        let currentRotation = 0;
-        let spinAngleStart = 0;
-        let spinTime = 0;
-        let spinTimeTotal = 0;
+        
 
         const wheelSize = Math.min(window.innerWidth, window.innerHeight) * 0.4;
         const centerX = wheelSize / 2;
@@ -81,7 +78,11 @@ addEventListener("DOMContentLoaded", function() {
                 ctx.textAlign = "left";
                 ctx.fillText(points[i], centerX * 0.35, 5);
                 ctx.restore();
-            }
+            };
+            
+            function spin() {
+
+            };
         }
         draw_wheel() 
     }
