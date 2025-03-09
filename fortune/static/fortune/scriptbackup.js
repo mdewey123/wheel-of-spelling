@@ -128,3 +128,26 @@ var options = ["$100", "$10", "$25", "$250", "$30", "$1000", "$1", "$200", "$45"
         }
 
         drawRouletteWheel();
+
+
+
+// working wheel spin but result bad
+
+function spin() {
+    if (spinning) return;
+    spinVelocity = Math.random() * 0.3 + 0.2;
+    spinning = true;
+    animate_wheel();
+}
+
+function determine_result() {
+    let normalizedAngle = (currentAngle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+    let adjustedAngle = (normalizedAngle + Math.PI / 2) % (2 * Math.PI);
+    let selectedIndex = Math.floor(adjustedAngle / spaces_angle);
+    
+    result.textContent = `Result: ${points[selectedIndex]}`;
+}
+
+document.getElementById("waaaah").addEventListener("click", spin);
+
+draw_wheel()

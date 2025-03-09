@@ -42,9 +42,8 @@ addEventListener("DOMContentLoaded", function() {
     make_guess()
 
     function wheel_spinner(){
-        const points = ["Lose a Turn", "250", "500", "600", "700", "1000", "2500", "5000", "Lose Points", "Lose a Turn", "250", "500", "600", "700", "1000", "2500", "5000", "Lose Points"];
+        const points = ["Lose a Turn","5000", "250", "500","1000", "600", "700", "2500", "Lose Points","10,000", "Lose a Turn", "5000", "250", "500","1000", "600", "700", "2500", "Lose Points", "10,000"];
 
-        const wheel = document.getElementById("game-wheel-container");
         const wheel_canvas = document.getElementById("game-wheel");
         const ctx = wheel_canvas.getContext("2d");
         const result = document.getElementById("result");
@@ -57,21 +56,31 @@ addEventListener("DOMContentLoaded", function() {
         const centerX = wheelSize / 2;
         const centerY = wheelSize / 2;
 
+        let currentAngle = 0;
+        let spinning = false;
+        let spinVelocity = 0;
+        let friction = 0.99;
+
         function draw_wheel() {
             wheel_canvas.width = wheelSize;
             wheel_canvas.height = wheelSize;
+            ctx.clearRect(0, 0, wheel_canvas.width, wheel_canvas.height);
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(currentAngle);
+            
 
             for (let i = 0; i < spaces; i++) {
                 ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, centerX * 0.95, i * spaces_angle, (i + 1) * spaces_angle);
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, centerX * 0.95, i * spaces_angle, (i + 1) * spaces_angle);
                 ctx.fillStyle = i % 2 === 0 ? "#ffcc00" : "#ff6600";
                 ctx.fill();
                 ctx.stroke();
                 ctx.closePath();
 
                 ctx.save();
-                ctx.translate(centerX, centerY);
+                ctx.translate(0, 0);
                 ctx.rotate(i * spaces_angle + spaces_angle / 2);
                 ctx.fillStyle = "black";
                 ctx.font = `${centerX * 0.1}px arial`;
@@ -79,13 +88,62 @@ addEventListener("DOMContentLoaded", function() {
                 ctx.fillText(points[i], centerX * 0.35, 5);
                 ctx.restore();
             };
-            
-            function spin() {
+        } 
+        
+        function animate_wheel() {
+            if (!spinning) return;
 
-            };
+            currentAngle += spinVelocity;
+            spinVelocity *= friction
+
+            if (spinVelocity <0.01) {
+                spinning = false;
+                determine_result();
+            }
+            draw_wheel();
+            requestAnimationFrame(animate_wheel);
         }
-        draw_wheel() 
+        
+        function spin() {
+            if (spinning) return;
+            spinVelocity = Math.random() * 0.3 + 0.2;
+            spinning = true;
+            animate_wheel();
+        }
+
+        function determine_result() {
+            // Normalize the angle so it's between 0 and 2*PI
+            let normalizedAngle = (currentAngle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        
+            // Calculate the angle of the 12 o'clock position (top of the wheel)
+            let topSliceAngle = Math.PI / 2;
+        
+            // Determine the angle difference from the top of the wheel (12 o'clock position)
+            let angleDifference = normalizedAngle - topSliceAngle;
+        
+            // If the angle difference is negative, adjust to ensure it's positive
+            if (angleDifference < 0) {
+                angleDifference += 2 * Math.PI;
+            }
+        
+            // Determine the index of the slice based on the angle difference
+            let selectedIndex = Math.floor(angleDifference / spaces_angle);
+        
+            // Ensure the result is within bounds
+            selectedIndex = selectedIndex % points.length;
+        
+            // Update the result text to display the slice at the 12 o'clock position
+            result.textContent = `Result: ${points[selectedIndex]}`;
+        }
+        
+        //if inde = ???? & velocity < 0.01 stop wheel
+
+        document.getElementById("waaaah").addEventListener("click", spin);
+
+        draw_wheel()
     }
+         
+    
     wheel_spinner()
 
 });
