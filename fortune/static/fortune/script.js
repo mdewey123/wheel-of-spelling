@@ -5,6 +5,8 @@ addEventListener("DOMContentLoaded", function() {
     const puzzPieces = gameBoard.querySelectorAll("div");
     const welcomePuzz = document.getElementById("game-board").dataset.puzzle;
 
+     
+
     function populate_board(sentence) {
         const letters = sentence.split("");
         //populate with letters for puzzle sentence
@@ -91,14 +93,19 @@ addEventListener("DOMContentLoaded", function() {
         } 
         
         function animate_wheel() {
-            if (!spinning) return;
-
+            
             currentAngle += spinVelocity;
             spinVelocity *= friction
+            let winningIndex = Math.floor(Math.random() * spaces);
+            let targetAngle = winningIndex * spaces_angle - Math.PI / 2;
+            const tolerance = 0.01
 
-            if (spinVelocity <0.01) {
+            if (spinVelocity < 0.05) {
                 spinning = false;
-                determine_result();
+                var degrees = currentAngle * 180 / Math.PI + 90;
+                var help = spaces_angle * 180 / Math.PI;
+                var answer = Math.floor((360 - degrees % 360)/help)
+                result.textContent = `Result: ${points[answer]}`;
             }
             draw_wheel();
             requestAnimationFrame(animate_wheel);
@@ -110,40 +117,20 @@ addEventListener("DOMContentLoaded", function() {
             spinning = true;
             animate_wheel();
         }
-
-        function determine_result() {
-            // Normalize the angle so it's between 0 and 2*PI
-            let normalizedAngle = (currentAngle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
         
-            // Calculate the angle of the 12 o'clock position (top of the wheel)
-            let topSliceAngle = Math.PI / 2;
         
-            // Determine the angle difference from the top of the wheel (12 o'clock position)
-            let angleDifference = normalizedAngle - topSliceAngle;
         
-            // If the angle difference is negative, adjust to ensure it's positive
-            if (angleDifference < 0) {
-                angleDifference += 2 * Math.PI;
-            }
-        
-            // Determine the index of the slice based on the angle difference
-            let selectedIndex = Math.floor(angleDifference / spaces_angle);
-        
-            // Ensure the result is within bounds
-            selectedIndex = selectedIndex % points.length;
-        
-            // Update the result text to display the slice at the 12 o'clock position
-            result.textContent = `Result: ${points[selectedIndex]}`;
-        }
-        
-        //if inde = ???? & velocity < 0.01 stop wheel
-
         document.getElementById("waaaah").addEventListener("click", spin);
-
+        
         draw_wheel()
     }
-         
     
     wheel_spinner()
 
 });
+
+
+function play_game() {
+    
+
+}
