@@ -5,6 +5,8 @@ addEventListener("DOMContentLoaded", function() {
     const puzzPieces = gameBoard.querySelectorAll("div");
     const welcomePuzz = document.getElementById("game-board").dataset.puzzle;
 
+    const gameToggle = document.getElementById("game-toggle")
+    
      
 
     function populate_board(sentence) {
@@ -90,15 +92,23 @@ addEventListener("DOMContentLoaded", function() {
                 ctx.fillText(points[i], centerX * 0.35, 5);
                 ctx.restore();
             };
+            ctx.save();
+            ctx.rotate(currentAngle);
+            ctx.beginPath();
+            ctx.moveTo(centerX * 0.85, -centerY - 20);  // Position of the arrow
+            ctx.lineTo(centerX * 0.95, -centerY - 40); // Arrow tip
+            ctx.lineTo(centerX * 0.75, -centerY - 40); // Arrow base
+            ctx.closePath();
+            ctx.fillStyle = "red";
+            ctx.fill();
+            ctx.restore();
         } 
         
         function animate_wheel() {
             
             currentAngle += spinVelocity;
             spinVelocity *= friction
-            let winningIndex = Math.floor(Math.random() * spaces);
-            let targetAngle = winningIndex * spaces_angle - Math.PI / 2;
-            const tolerance = 0.01
+            
 
             if (spinVelocity < 0.05) {
                 spinning = false;
@@ -120,17 +130,51 @@ addEventListener("DOMContentLoaded", function() {
         
         
         
-        document.getElementById("waaaah").addEventListener("click", spin);
+        document.getElementById("game-wheel").addEventListener("click", spin);
         
         draw_wheel()
     }
     
     wheel_spinner()
-
+    gameToggle.addEventListener("click", play_game)
 });
 
 
 function play_game() {
-    
+    const playerBoard = document.getElementById("player-board")
+    const scoreBoard = document.getElementById("score-board")
 
+    function player_query() {
+        playerBoard.querySelector('h4').textContent = "How many players?"
+        
+        for (let i = 1; i < 7; i ++ ) {
+            const newButton = document.createElement('button')
+            newButton.setAttribute('class', 'col')
+            newButton.setAttribute('id', `select-${i}`)
+            newButton.textContent = `${i} teams`
+            playerBoard.appendChild(newButton)
+        };
+
+        playerBoard.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(event) { set_players(event); });
+        });
+
+        function set_players(event) {
+            const selectedTeams = parseInt(event.target.textContent);
+            
+            for (let i = 1; i <= selectedTeams; i ++ ) {
+                const playerCard = document.createElement("div");
+                playerCard.setAttribute('class', 'col');
+                playerCard.setAttribute('id', `team-${i}`)
+                const playerTitle = document.createElement('h4');
+                playerTitle.textContent = `Team ${i}`;
+
+                playerCard.appendChild(playerTitle);
+                scoreBoard.appendChild(playerCard)
+            };
+            playerBoard.textContent = ""
+            playerBoard.style.display = "none"
+        };
+    }
+    player_query();
 }
