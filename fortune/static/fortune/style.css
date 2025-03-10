@@ -63,7 +63,12 @@ body {
     transform: translate(-50%, -50%);
     z-index: 1000;
     border: 2px solid red;
-    display: none;
+    
+}
+
+#game-wheel-container i {
+    left: 50%;
+    top: 0%;
 }
 
 #game-wheel {
@@ -73,6 +78,6 @@ body {
 
 #result {
     position: fixed;
-    top: 10%;
+    top: 2%;
     left: 80%;
 }

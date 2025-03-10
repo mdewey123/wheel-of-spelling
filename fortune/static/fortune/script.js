@@ -110,12 +110,12 @@ addEventListener("DOMContentLoaded", function() {
             spinVelocity *= friction
             
 
-            if (spinVelocity < 0.05) {
+            if (spinVelocity < 0.02) {
                 spinning = false;
                 var degrees = currentAngle * 180 / Math.PI + 90;
                 var help = spaces_angle * 180 / Math.PI;
                 var answer = Math.floor((360 - degrees % 360)/help)
-                result.textContent = `Result: ${points[answer]}`;
+                result.textContent = `${points[answer]}`;
             }
             draw_wheel();
             requestAnimationFrame(animate_wheel);
