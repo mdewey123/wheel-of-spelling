@@ -176,5 +176,9 @@ function play_game() {
             playerBoard.style.display = "none"
         };
     }
+    function game_turn(player) {
+        
+    }
+
     player_query();
 }
