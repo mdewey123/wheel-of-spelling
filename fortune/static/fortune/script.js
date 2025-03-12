@@ -168,17 +168,35 @@ function play_game() {
                 playerCard.setAttribute('id', `team-${i}`)
                 const playerTitle = document.createElement('h4');
                 playerTitle.textContent = `Team ${i}`;
-
+                const points = document.createElement('h3');
+                points.setAttribute('class', 'point-counter')
+                points.textContent = 'Points: 0'
+                const playButton = document.createElement("button");
+                playButton.setAttribute('id', `start-${i}`)
                 playerCard.appendChild(playerTitle);
-                scoreBoard.appendChild(playerCard)
+                scoreBoard.appendChild(playerCard);
+                scoreBoard.appendChild(points);
+                playerCard.appendChild(playButton);
             };
             playerBoard.textContent = ""
             playerBoard.style.display = "none"
         };
-    }
-    function game_turn(player) {
         
     }
 
+    const turnPlayer = playerBoard.querySelectorAll(btn)
+    playerBoard.querySelectorAll(turnPlayer).forEach(addEventListener("click", game_turn(turnPlayer)));
+
+    function game_turn(player) {
+        pointStart = player.querySelector('.point-counter').parseInt()
+        player.style.border.color = "yellow"
+        const spinButton = document.createElement('button')
+        spinButton.textContent = 'spin wheel'
+        gameBoard.appendChild(spinButton)
+        
+
+    }
+
     player_query();
+    game_turn();
 }
