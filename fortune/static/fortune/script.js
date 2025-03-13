@@ -184,8 +184,12 @@ function play_game() {
         
     }
 
-    const turnPlayer = playerBoard.querySelectorAll(btn)
-    playerBoard.querySelectorAll(turnPlayer).forEach(addEventListener("click", game_turn(turnPlayer)));
+    const turnPlayer = playerBoard.querySelectorAll('button')
+    turnPlayer.forEach(element => 
+        element.addEventListener("click", () => game_turn(turnPlayer))
+    );
+
+
 
     function game_turn(player) {
         pointStart = player.querySelector('.point-counter').parseInt()
@@ -198,5 +202,5 @@ function play_game() {
     }
 
     player_query();
-    game_turn();
+    
 }
