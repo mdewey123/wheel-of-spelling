@@ -25,7 +25,7 @@
 <div id="game-wheel-container">
     <i class="arrow-down"></i>
     <canvas id="game-wheel"></canvas>
-    <h3 id="result">TEST</h3>
+    <h3 id="result">Points</h3>
 </div>
 
 <div id="game-board" class="row" data-puzzle="{{welcome_puzz.sentence}}">
@@ -43,6 +43,9 @@
         </div>
     {% endfor %}
     <br><br>
+</div>
+
+<div id="vowel-pieces" class="row">
     <h3>Buy for 500 points:</h3>
     {% for n in vowels %}
     <div class="col-1" meta-data="{{n}}">

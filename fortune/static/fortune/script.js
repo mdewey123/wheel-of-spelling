@@ -1,6 +1,6 @@
 addEventListener("DOMContentLoaded", function() {
     const gameBoard = document.getElementById("game-board");
-    const gamePieces = document.querySelectorAll('#game-pieces div')
+    
     
     const puzzPieces = gameBoard.querySelectorAll("div");
     const welcomePuzz = document.getElementById("game-board").dataset.puzzle;
@@ -10,7 +10,7 @@ addEventListener("DOMContentLoaded", function() {
     
     populate_board(welcomePuzz, puzzPieces)
     gameToggle.addEventListener("click", () =>{
-        play_game();
+        play_game(puzzPieces);
         gameToggle.style.display = 'none'
     })
     
@@ -36,20 +36,66 @@ function populate_board(sentence, puzzPieces) {
 
 function make_guess(gamePieces, puzzPieces) {
     return new Promise((resolve) => {
-        const pointCount = 0
-        gamePieces.forEach((gamePiece) =>{
-            gamePiece.addEventListener("click", function() {
-                puzzPieces.forEach((piece) =>{
-                    const wagh = piece.querySelector('h4')
-                    if (wagh && gamePiece.dataset.letter === wagh.textContent.toLowerCase()) {
+        let pointCount = 0;
+
+        function guess(){
+            const guessedLetter = this.dataset.letter;
+            let correctGuess = false;
+
+            puzzPieces.forEach((piece) =>{
+                const wagh = piece.querySelector('h4');
+                if (wagh && guessedLetter === wagh.textContent.toLowerCase()) {
                     wagh.style.color = "black";
-                    pointCount += 1
-                    }
-                });
+                    pointCount += 1;
+                    correctGuess = true;
+                }                
             });
+            
+            if (correctGuess) {
+                this.style.backgroundColor = 'blue';
+            } else {
+                this.style.backgroundColor = 'red';
+            }
+
+            gamePieces.forEach((gp) => gp.removeEventListener("click", guess));
+            resolve(pointCount);
+        };
+
+        gamePieces.forEach((gamePiece) =>{
+            gamePiece.addEventListener("click", guess);
         });
-        resolve(pointCount);
     });
+    
+}
+
+function vowel_guess(vowelPieces, puzzPieces) {
+
+        function guess(){
+            const guessedLetter = this.dataset.letter;
+            let correctGuess = false;
+
+            puzzPieces.forEach((piece) =>{
+                const wagh = piece.querySelector('h4');
+                if (wagh && guessedLetter === wagh.textContent.toLowerCase()) {
+                    wagh.style.color = "black";
+                    pointCount += 1;
+                    correctGuess = true;
+                }                
+            });
+            
+            if (correctGuess) {
+                this.style.backgroundColor = 'blue';
+            } else {
+                this.style.backgroundColor = 'red';
+            }
+
+            vowelPieces.forEach((vp) => vp.removeEventListener("click", guess));
+        };
+
+        vowelPieces.forEach((vowelPiece) =>{
+            vowelPiece.addEventListener("click", guess);
+        });
+    
 }
 
 
@@ -116,23 +162,23 @@ function wheel_spinner(){
         
 
         function animate_wheel() {
-            
+            if (!spinning) return;
             currentAngle += spinVelocity;
             spinVelocity *= friction
             
+            draw_wheel();
 
-            if (spinVelocity < 0.02) {
+            if (spinVelocity < 0.002) {
                 spinning = false;
                 var degrees = currentAngle * 180 / Math.PI + 90;
                 var help = spaces_angle * 180 / Math.PI;
                 var answer = Math.floor((360 - degrees % 360)/help)
                 result.textContent = points[answer];
-                resolve(result);
                 wheel_div.addEventListener('click', () => {
-                    wheel_div.style.display = 'none'
-                });
-            }
-            draw_wheel();
+                    wheel_div.style.display = 'none';
+                }, {once: true});
+                resolve(result.textContent);
+            } 
             requestAnimationFrame(animate_wheel);
         }
         
@@ -144,16 +190,17 @@ function wheel_spinner(){
         }
         
         
-        
-        document.getElementById("game-wheel").addEventListener("click", spin, {once: true});
-        
         draw_wheel()
+        document.getElementById("game-wheel").addEventListener("click", spin, {once: true});
+        return;
+        
     });
 }
 
-function play_game() {
+function play_game(puzzPieces) {
     const playerBoard = document.getElementById("player-board")
     const scoreBoard = document.getElementById("score-board")
+    const gamePieces = document.querySelectorAll('#game-pieces div')
 
     function player_query() {
         playerBoard.querySelector('h4').textContent = "How many players?"
@@ -197,37 +244,67 @@ function play_game() {
     }    
 
     async function game_turn(player) {
-        const pointDiv = player.querySelector(".points-counter")
-        const pointStart = parseInt(pointDiv.textContent.replace('points: ', ''));
+        const pointHeading = player.querySelector(".point-counter")
+        const pointStartText = (pointHeading.textContent);
+        const pointStart = parseInt(pointStartText.replace('Points: ', ''))
         player.style.borderColor = "yellow"
         const spinButton = player.querySelector('button')
         spinButton.style.display = 'none'
-        const result = await wheel_spinner();
-        if(result === 'Lose a Turn') {
-            alert("Luck's not yours today, you loose a turn");
+        //add buy vowel logic
+        if (pointStart >= 500) {
+            const buyVowelButton = document.createElement('button')
+            buyVowelButton.setAttribute('id', 'buy-vowel')
+            playerBoard.appendChild(buyVowelButton)
+            buyVowelButton.addEventListener('click', () =>{
+                vowel_guess()
+                let subbedPoints = pointStart - 500;
+                pointHeading.textContent = `Points: ${subbedPoints}`;
+                end_turn(player);
+            });
             
-        } else if(result === 'Lose Points') {
-            alert("How unfortunate, you're loosing points and your turn")
-            pointDiv.textContent = 'Points: 0'
-             
+
         } else {
-            const newPoints = document.createElement('h2');
-            newPoints.textContent = `Playing for: ${result}`
-            player.appendChild(newPoints) 
-            const modifier = await make_guess(gamePieces, puzzPieces);
-            const finalPoints = result * pointStart 
-            pointDiv.textContent = `Points: ${finalPoints}`;
+            const result = await wheel_spinner();
+
+            if(result === 'Lose a Turn') {
+                alert("Luck's not yours today, you loose a turn");
+                
+            } else if(result === 'Lose Points') {
+                alert("How unfortunate, you're loosing points and your turn")
+                pointHeading.textContent = 'Points: 0'
+                
+            } else {
+                const newPoints = document.createElement('h2');
+                newPoints.setAttribute('id', 'new-points')
+                newPoints.textContent = `Playing for: ${result}`
+                player.appendChild(newPoints) 
+                const letterCount = await make_guess(gamePieces, puzzPieces);
+                let modifier = parseInt(letterCount)
+                resultPoints = parseInt(result.replace(',', ''))
+                console.log(`modifier: ${modifier}`)
+                console.log(`Point start: ${pointStart}`)
+                console.log(`result point: ${resultPoints}`)
+                const finalPoints = pointStart + resultPoints * modifier; 
+                console.log(`final points: ${finalPoints}`)
+                pointHeading.textContent = `Points: ${finalPoints}`;
+            }   
         }
 
-        end_turn();
+        end_turn(player);
 
     }
 
     player_query();
-
-
 }
 
-function end_turn() {
+function end_turn(player) {
+    console.log('ending turn')
+    player.style.borderColor = "transparent"
+    const newPointsElement = player.querySelector('#new-points');
+    if (newPointsElement) {
+        newPointsElement.remove();  // Removes the element from the DOM
+    }
+    player.querySelector('button').style.display = 'block'
+
 
 }
