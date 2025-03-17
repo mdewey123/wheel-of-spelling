@@ -71,7 +71,7 @@ def wheel_of_spelling(request):
     consenants = ("b", "c", 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z')
     vowels = ('a', 'e', 'i', 'o', 'u')
     puzzles = WosPuzz.objects.filter(User = request.user)
-    welcome_puzz = puzzles.first()
+    welcome_puzz = puzzles.last()
 
     if request.method == "POST":
 

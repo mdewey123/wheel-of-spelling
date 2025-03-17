@@ -29,7 +29,7 @@ function populate_board(sentence, puzzPieces) {
 
         }
         if (h4.textContent === " " || h4.textContent === "") {
-            piece.style.backgroundColor = "black"
+            piece.style.backgroundColor = "gray"
         }
     });
 }
@@ -69,15 +69,21 @@ function make_guess(gamePieces, puzzPieces) {
 }
 
 function vowel_guess(vowelPieces, puzzPieces) {
-
+    
+    return new Promise((resolve) => {
+        let deduction = 500
         function guess(){
-            const guessedLetter = this.dataset.letter;
+            const guessedLetter = this.dataset.vowel;
             let correctGuess = false;
+            let pointCount = 0;
 
+            console.log(`Guessed vowel: ${guessedLetter}`);
+            
             puzzPieces.forEach((piece) =>{
-                const wagh = piece.querySelector('h4');
-                if (wagh && guessedLetter === wagh.textContent.toLowerCase()) {
-                    wagh.style.color = "black";
+                const vowel = piece.querySelector('h4');
+                if (vowel && guessedLetter === vowel.textContent.toLowerCase()) {
+                    console.log(`Checking puzzle piece: ${vowel.textContent.toLowerCase()}`)
+                    vowel.style.color = "black";
                     pointCount += 1;
                     correctGuess = true;
                 }                
@@ -88,14 +94,15 @@ function vowel_guess(vowelPieces, puzzPieces) {
             } else {
                 this.style.backgroundColor = 'red';
             }
-
+            console.log(correctGuess)
             vowelPieces.forEach((vp) => vp.removeEventListener("click", guess));
+            resolve(deduction);
         };
 
         vowelPieces.forEach((vowelPiece) =>{
             vowelPiece.addEventListener("click", guess);
         });
-    
+    })
 }
 
 
@@ -247,23 +254,50 @@ function play_game(puzzPieces) {
         const pointHeading = player.querySelector(".point-counter")
         const pointStartText = (pointHeading.textContent);
         const pointStart = parseInt(pointStartText.replace('Points: ', ''))
-        player.style.borderColor = "yellow"
-        const spinButton = player.querySelector('button')
-        spinButton.style.display = 'none'
-        //add buy vowel logic
+        const buttonDiv = document.getElementById('button-div')
+
+        player.style.border = "2px solid yellow"
+        const startButton = player.querySelector('button')
+        startButton.style.display = 'none'
+
+        const spinButton = document.createElement('button')
+        
+        spinButton.setAttribute('id', 'wheel-spin')
+        spinButton.textContent = 'spin the wheel'
+        buttonDiv.appendChild(spinButton)
+        const buyVowelButton = document.createElement('button')
+        const solveButton = document.createElement('button')
+        solveButton.setAttribute('id', 'solve-btn')
+        solveButton.textContent = 'Solved'
+        buttonDiv.appendChild(solveButton)
+
         if (pointStart >= 500) {
             const buyVowelButton = document.createElement('button')
+          
             buyVowelButton.setAttribute('id', 'buy-vowel')
-            playerBoard.appendChild(buyVowelButton)
-            buyVowelButton.addEventListener('click', () =>{
-                vowel_guess()
-                let subbedPoints = pointStart - 500;
+            buyVowelButton.textContent = 'Buy a vowel?'
+            buttonDiv.appendChild(buyVowelButton)
+
+            buyVowelButton.addEventListener('click', async () =>{
+                const vowelPieceDiv = document.getElementById('vowel-pieces')
+                const vowelPieces = vowelPieceDiv.querySelectorAll('div')
+                
+                buyVowelButton.remove()
+                spinButton.remove()
+                solveButton.remove()
+                let deduction = await vowel_guess(vowelPieces, puzzPieces)
+                
+                let subbedPoints = pointStart - deduction;
                 pointHeading.textContent = `Points: ${subbedPoints}`;
                 end_turn(player);
             });
-            
 
-        } else {
+        } 
+
+        spinButton.addEventListener('click', async () =>{
+            spinButton.remove()
+            buyVowelButton.remove()
+            solveButton.remove()
             const result = await wheel_spinner();
 
             if(result === 'Lose a Turn') {
@@ -287,10 +321,20 @@ function play_game(puzzPieces) {
                 const finalPoints = pointStart + resultPoints * modifier; 
                 console.log(`final points: ${finalPoints}`)
                 pointHeading.textContent = `Points: ${finalPoints}`;
-            }   
-        }
+            }  
+            end_turn(player); 
+        }); 
 
-        end_turn(player);
+        solveButton.addEventListener('click', () =>{
+            spinButton.remove()
+            buyVowelButton.remove()
+            gamePieces.forEach((piece) => {
+                piece.querySelector('h4').style.color = 'black';
+            });
+                
+            let solvePoints = pointStart + 2000
+            pointHeading.textContent = `Points: ${solvePoints}`
+        });
 
     }
 
@@ -301,10 +345,19 @@ function end_turn(player) {
     console.log('ending turn')
     player.style.borderColor = "transparent"
     const newPointsElement = player.querySelector('#new-points');
+    const byeSpin = document.getElementById("wheel-spin");
+    const byeVowel = document.getElementById('buy-vowel')
+
     if (newPointsElement) {
-        newPointsElement.remove();  // Removes the element from the DOM
+        newPointsElement.remove();  
     }
+    if (byeSpin) {
+        byeSpin.remove();
+    };
+
+    if (byeVowel) {
+        byeVowel.remove();
+    };
+
     player.querySelector('button').style.display = 'block'
-
-
 }

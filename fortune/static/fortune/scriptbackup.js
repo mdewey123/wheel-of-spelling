@@ -151,3 +151,18 @@ function determine_result() {
 document.getElementById("waaaah").addEventListener("click", spin);
 
 draw_wheel()
+
+
+
+
+function end_turn(player) {
+    console.log('ending turn')
+    player.style.borderColor = "transparent"
+    const newPointsElement = player.querySelector('#new-points');
+    if (newPointsElement) {
+        newPointsElement.remove();  // Removes the element from the DOM
+    }
+    player.querySelector('button').style.display = 'block'
+
+
+}

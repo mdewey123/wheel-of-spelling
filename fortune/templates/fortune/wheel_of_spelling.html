@@ -46,16 +46,16 @@
 </div>
 
 <div id="vowel-pieces" class="row">
-    <h3>Buy for 500 points:</h3>
+    <h3>Buy a vowel for 500 points:</h3>
     {% for n in vowels %}
-    <div class="col-1" meta-data="{{n}}">
+    <div class="col-1" data-vowel="{{n}}">
         <h4>{{n}}</h4>
     </div>
     {% endfor %}
 </div>
 
 <div id="score-board" class="row">
-    <div class="col-1">
+    <div class="col-1" id="button-div">
         <button id="game-toggle"> Start game </button>
     </div>
     <div id="player-board" class="col">
