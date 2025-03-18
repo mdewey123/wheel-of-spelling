@@ -46,6 +46,8 @@ function make_guess(gamePieces, puzzPieces) {
                 const wagh = piece.querySelector('h4');
                 if (wagh && guessedLetter === wagh.textContent.toLowerCase()) {
                     wagh.style.color = "black";
+                    wagh.style.fontWeight = "bold"; 
+                    wagh.style.fontSize = "1.5rem";
                     pointCount += 1;
                     correctGuess = true;
                 }                
@@ -84,6 +86,8 @@ function vowel_guess(vowelPieces, puzzPieces) {
                 if (vowel && guessedLetter === vowel.textContent.toLowerCase()) {
                     console.log(`Checking puzzle piece: ${vowel.textContent.toLowerCase()}`)
                     vowel.style.color = "black";
+                    vowel.style.fontWeight = "bold"; 
+                    vowel.style.fontSize = "1.5rem";
                     pointCount += 1;
                     correctGuess = true;
                 }                
@@ -103,6 +107,15 @@ function vowel_guess(vowelPieces, puzzPieces) {
             vowelPiece.addEventListener("click", guess);
         });
     })
+}
+
+function solve_puz(puzzPieces) {
+    puzzPieces.forEach((piece) => {
+        console.log('checking piece');
+        const letter = piece.querySelector('h4');
+        letter.style.color = 'black';
+    });
+
 }
 
 
@@ -326,13 +339,11 @@ function play_game(puzzPieces) {
         }); 
 
         solveButton.addEventListener('click', () =>{
-            spinButton.remove()
-            buyVowelButton.remove()
-            gamePieces.forEach((piece) => {
-                piece.querySelector('h4').style.color = 'black';
-            });
+            spinButton.remove();
+            buyVowelButton.remove();
+            solve_puz(puzzPieces);
                 
-            let solvePoints = pointStart + 2000
+            let solvePoints = pointStart + 20000
             pointHeading.textContent = `Points: ${solvePoints}`
         });
 
