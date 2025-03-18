@@ -128,6 +128,9 @@ function wheel_spinner(){
         const ctx = wheel_canvas.getContext("2d");
         const result = document.getElementById("result");
 
+        const spinSound = new Audio("{% static 'sounds/roulette_spin.mp3' %}");
+        const stopSound = new Audio("{% static 'sounds/roulette_stop.mp3' %}");
+
         const spaces = points.length;
         const spaces_angle = (2 * Math.PI) / spaces;
         
@@ -190,6 +193,9 @@ function wheel_spinner(){
 
             if (spinVelocity < 0.002) {
                 spinning = false;
+                spinSound.pause();
+                stopSound.play()
+
                 var degrees = currentAngle * 180 / Math.PI + 90;
                 var help = spaces_angle * 180 / Math.PI;
                 var answer = Math.floor((360 - degrees % 360)/help)
@@ -206,6 +212,7 @@ function wheel_spinner(){
             if (spinning) return;
             spinVelocity = Math.random() * 0.3 + 0.2;
             spinning = true;
+            spinSound.currentTime = 0;
             animate_wheel();
         }
         
