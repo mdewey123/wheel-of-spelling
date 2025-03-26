@@ -28,13 +28,27 @@
     <h3 id="result">Points</h3>
 </div>
 
-<div id="game-board" class="row" data-puzzle="{{welcome_puzz.sentence}}">
-    {% for n in grid %}
-        <div id="{{n}}" class="col-1">
-            <h4 style="font: bold 2rem;"></h4>
+<div id="big-div" class="row">
+    <div id="score-board" class="col-2">
+        <div class="col-1" id="button-div">
+            <button id="game-toggle"> Start game </button>
         </div>
-    {% endfor %}
+        <div id="player-board" class="col">
+            <h4></h4>
+        </div>
+    </div>
+
+    <div id="test-div" class="col">
+        <div id="game-board" class="row" data-puzzle="{{welcome_puzz.sentence}}">
+            {% for n in grid %}
+                <div id="{{n}}" class="col-1">
+                    <h4 style="font: bold 2rem;"></h4>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
+
 
 <div id="game-pieces" class="row">
     {% for n in consenants %}
@@ -53,13 +67,5 @@
     {% endfor %}
 </div>
 
-<div id="score-board" class="row">
-    <div class="col-1" id="button-div">
-        <button id="game-toggle"> Start game </button>
-    </div>
-    <div id="player-board" class="col">
-        <h4></h4>
-    </div>
-</div>
 
 {% endblock %}

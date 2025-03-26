@@ -41,28 +41,27 @@ function make_guess(gamePieces, puzzPieces) {
         function guess(){
             const guessedLetter = this.dataset.letter;
             let correctGuess = false;
+            gamePiece = this
 
-            puzzPieces.forEach((piece) =>{
-                const wagh = piece.querySelector('h4');
-                if (wagh && guessedLetter === wagh.textContent.toLowerCase()) {
-                    wagh.style.color = "black";
-                    wagh.style.fontWeight = "bold"; 
-                    wagh.style.fontSize = "1.5rem";
-                    pointCount += 1;
-                    correctGuess = true;
-                }                
+            puzzPieces.forEach((piece, index) =>{
+                setTimeout(() => {
+                    const wagh = piece.querySelector('h4');
+                    if (wagh && guessedLetter === wagh.textContent.toLowerCase()) {
+                        piece.style.backgroundColor = "gold"
+                        wagh.style.color = "black";
+                        wagh.style.fontWeight = "bold"; 
+                        wagh.style.fontSize = "1.5rem";
+                        pointCount += 1;
+                        correctGuess = true;
+                    }     
+                    if (index === puzzPieces.length - 1) {
+                        gamePiece.style.backgroundColor = correctGuess ? "blue" : "red";
+                        resolve(pointCount);
+                    }
+                }, index * 50);          
             });
-            
-            if (correctGuess) {
-                this.style.backgroundColor = 'blue';
-            } else {
-                this.style.backgroundColor = 'red';
-            }
-
             gamePieces.forEach((gp) => gp.removeEventListener("click", guess));
-            resolve(pointCount);
         };
-
         gamePieces.forEach((gamePiece) =>{
             gamePiece.addEventListener("click", guess);
         });
@@ -78,26 +77,28 @@ function vowel_guess(vowelPieces, puzzPieces) {
             const guessedLetter = this.dataset.vowel;
             let correctGuess = false;
             let pointCount = 0;
+            gamePiece = this
 
             console.log(`Guessed vowel: ${guessedLetter}`);
             
-            puzzPieces.forEach((piece) =>{
-                const vowel = piece.querySelector('h4');
-                if (vowel && guessedLetter === vowel.textContent.toLowerCase()) {
-                    console.log(`Checking puzzle piece: ${vowel.textContent.toLowerCase()}`)
-                    vowel.style.color = "black";
-                    vowel.style.fontWeight = "bold"; 
-                    vowel.style.fontSize = "1.5rem";
-                    pointCount += 1;
-                    correctGuess = true;
-                }                
+            puzzPieces.forEach((piece, index) =>{
+                setTimeout(() => {
+                    const vowel = piece.querySelector('h4');
+                    if (vowel && guessedLetter === vowel.textContent.toLowerCase()) {
+                        console.log(`Checking puzzle piece: ${vowel.textContent.toLowerCase()}`)
+                        piece.style.backgroundColor = "gold"
+                        vowel.style.color = "black";
+                        vowel.style.fontWeight = "bold"; 
+                        vowel.style.fontSize = "1.5rem";
+                        pointCount += 1;
+                        correctGuess = true;
+                    }
+                    if (index === puzzPieces.length - 1) {
+                        gamePiece.style.backgroundColor = correctGuess ? "blue" : "red";
+                    }
+                }, index * 50);
+                                
             });
-            
-            if (correctGuess) {
-                this.style.backgroundColor = 'blue';
-            } else {
-                this.style.backgroundColor = 'red';
-            }
             console.log(correctGuess)
             vowelPieces.forEach((vp) => vp.removeEventListener("click", guess));
             resolve(deduction);
@@ -249,21 +250,25 @@ function play_game(puzzPieces) {
             
             for (let i = 1; i <= selectedTeams; i ++ ) {
                 const playerCard = document.createElement("div");
-                playerCard.setAttribute('class', 'col-2');
+                playerCard.setAttribute('class', 'row');
                 playerCard.setAttribute('id', `team-${i}`)
-                const playerTitle = document.createElement('h4');
+                playerCard.style.margin = '0.2%'
+                const playerTitle = document.createElement('h6');
+                playerTitle.setAttribute('class', 'col');
                 playerTitle.textContent = `Team ${i}`;
-                const points = document.createElement('h5');
-                points.setAttribute('class', 'point-counter')
-                points.textContent = 'Points: 0'
+                const points = document.createElement('h6');
+                points.classList.add('col', 'point-counter')
+                points.textContent = 'Points: 0';
                 const playButton = document.createElement("button");
-                playButton.setAttribute('id', `start-${i}`)
-                playButton.textContent = 'start turn'
+                playButton.setAttribute('id', `start-${i}`);
+                playButton.textContent = 'start turn';
                 playerCard.appendChild(playerTitle);
                 scoreBoard.appendChild(playerCard);
                 playerCard.appendChild(points);
                 playerCard.appendChild(playButton);
                 playButton.addEventListener("click", () => game_turn(playerCard));
+                playerCard.style.minHeight = "12.5%"
+                playerCard.style.maxHeight = "40%"
             };
             playerBoard.textContent = ""
             playerBoard.style.display = "none"

@@ -18,6 +18,18 @@ class WosPuzz(models.Model):
 
   def __str__(self):
     return self.title
+  
+class WosPuzz2(models.Model):
+  User = models.ForeignKey(User, on_delete=CASCADE)
+  title = models.CharField(max_length=15)
+  line1 = models.CharField(max_length=12)
+  line2 = models.CharField(max_length=12)
+  line3 = models.CharField(max_length=12)
+  line4 = models.CharField(max_length=12)
+  hint = models.CharField(max_length=25, blank=True, null=True)
+
+  def __str__(self):
+    return self.title
 
 class Student(models.Model):
   name = models.CharField(max_length=25)
