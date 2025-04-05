@@ -6,7 +6,7 @@ from django.utils.text import slugify
 # Create your models here.
 
 class User(AbstractUser):
-  name = models.CharField(max_length=25)
+  name = models.CharField(max_length=12)
   def __str__(self):
     return f"{self.username} ({self.email})"
   

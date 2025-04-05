@@ -6,9 +6,17 @@ addEventListener("DOMContentLoaded", function() {
     const welcomePuzz = document.getElementById("game-board").dataset.puzzle;
 
     const gameToggle = document.getElementById("game-toggle")
+
+    let rows = [
+        this.document.getElementById("board-row1"),
+        this.document.getElementById("board-row2"),
+        this.document.getElementById("board-row3"),
+        this.document.getElementById("board-row4"),
+    ]
+
+    let sentences = rows.map(row => row.dataset[`line${rows.indexOf(row) + 1}`])
     
-    
-    populate_board(welcomePuzz, puzzPieces)
+    populate_board(rows, sentences)
     gameToggle.addEventListener("click", () =>{
         play_game(puzzPieces);
         gameToggle.style.display = 'none'
@@ -114,6 +122,10 @@ function solve_puz(puzzPieces) {
     puzzPieces.forEach((piece) => {
         console.log('checking piece');
         const letter = piece.querySelector('h4');
+        if (piece.style.backgroundColor === "white") {
+            piece.style.backgroundColor = "gold";
+        };
+        
         letter.style.color = 'black';
     });
 
@@ -129,8 +141,8 @@ function wheel_spinner(){
         const ctx = wheel_canvas.getContext("2d");
         const result = document.getElementById("result");
 
-        const spinSound = new Audio("{% static 'sounds/roulette_spin.mp3' %}");
-        const stopSound = new Audio("{% static 'sounds/roulette_stop.mp3' %}");
+        const spinSound = new Audio("/static/audio/roulette-tick.mp3");
+        const stopSound = new Audio("/static/audio/roulette-stop.mp3");
 
         const spaces = points.length;
         const spaces_angle = (2 * Math.PI) / spaces;
@@ -213,7 +225,8 @@ function wheel_spinner(){
             if (spinning) return;
             spinVelocity = Math.random() * 0.3 + 0.2;
             spinning = true;
-            spinSound.currentTime = 0;
+            spinSound.currentTime = 0.5;
+            spinSound.play()
             animate_wheel();
         }
         
@@ -229,6 +242,12 @@ function play_game(puzzPieces) {
     const playerBoard = document.getElementById("player-board")
     const scoreBoard = document.getElementById("score-board")
     const gamePieces = document.querySelectorAll('#game-pieces div')
+
+    function select_puzzle() {
+        playerBoard.querySelector('h4').textContent = "Which puzzle do you want to play?";
+
+        populate_board(puzzle, puzzPieces)
+    };
 
     function player_query() {
         playerBoard.querySelector('h4').textContent = "How many players?"

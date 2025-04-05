@@ -67,11 +67,11 @@ def profile(request, user):
     return render(request, 'fortune/profile.html')
 
 def wheel_of_spelling(request):
-    grid = range(48)
+    grid = range(12)
     consenants = ("b", "c", 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z')
     vowels = ('a', 'e', 'i', 'o', 'u')
-    puzzles = WosPuzz.objects.filter(User = request.user)
-    welcome_puzz = puzzles.last()
+    puzzles = WosPuzz2.objects.filter(User = request.user)
+    welcome_puzz = puzzles.first()
 
     if request.method == "POST":
 

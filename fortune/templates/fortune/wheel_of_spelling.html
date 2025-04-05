@@ -39,12 +39,35 @@
     </div>
 
     <div id="test-div" class="col">
-        <div id="game-board" class="row" data-puzzle="{{welcome_puzz.sentence}}">
-            {% for n in grid %}
-                <div id="{{n}}" class="col-1">
-                    <h4 style="font: bold 2rem;"></h4>
-                </div>
-            {% endfor %}
+        <div id="game-board" >
+            <div id="board-row-1" class="row" data-line1="{{puzz.line1}}">
+                {% for n in grid %}
+                    <div id="{{n}}" class="col-1">
+                        <h4 style="font: bold 2rem;"></h4>
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="board-row-2" class="row" data-line2="{{puzz.line2}}">
+                {% for n in grid %}
+                    <div id="{{n}}" class="col-1">
+                        <h4 style="font: bold 2rem;"></h4>
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="board-row-3" class="row" data-line3="{{puzz.line3}}">
+                {% for n in grid %}
+                    <div id="{{n}}" class="col-1">
+                        <h4 style="font: bold 2rem;"></h4>
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="board-row-4" class="row" data-line4="{{puzz.line4}}">
+                {% for n in grid %}
+                    <div id="{{n}}" class="col-1">
+                        <h4 style="font: bold 2rem;"></h4>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
