@@ -3,33 +3,39 @@ addEventListener("DOMContentLoaded", function() {
     
     
     const puzzPieces = gameBoard.querySelectorAll("div");
-    const welcomePuzz = document.getElementById("game-board").dataset.puzzle;
 
     const gameToggle = document.getElementById("game-toggle")
 
     let rows = [
-        this.document.getElementById("board-row1"),
-        this.document.getElementById("board-row2"),
-        this.document.getElementById("board-row3"),
-        this.document.getElementById("board-row4"),
+        this.document.getElementById("board-row-1"),
+        this.document.getElementById("board-row-2"),
+        this.document.getElementById("board-row-3"),
+        this.document.getElementById("board-row-4"),
     ]
 
-    let sentences = rows.map(row => row.dataset[`line${rows.indexOf(row) + 1}`])
+    let sentences = rows.map((row, index) => row.dataset[`line${index + 1}`])
+
     
     populate_board(rows, sentences)
     gameToggle.addEventListener("click", () =>{
         play_game(puzzPieces);
         gameToggle.style.display = 'none'
     })
+
+    document.querySelector("#new-puzz").addEventListener("click", make_new_puzz);
     
 
 });
 
-function populate_board(sentence, puzzPieces) {
+function make_new_puzz() {
+    document.querySelector("#new-puzz").style.display = 'none'
+    document.querySelector('#new-puzz-form').style.display = "block"
+}
+
+function populate_board_old(sentence, puzzPieces) {
     const letters = sentence.split("");
     //populate with letters for puzzle sentence
-    puzzPieces.forEach((piece, index) => {
-        
+    puzzPieces.forEach((piece, index) => {        
         const h4 = piece.querySelector('h4');
         if (h4) {
             h4.textContent = index < letters.length ? letters[index] : "";
@@ -39,6 +45,31 @@ function populate_board(sentence, puzzPieces) {
         if (h4.textContent === " " || h4.textContent === "") {
             piece.style.backgroundColor = "gray"
         }
+    });
+}
+
+function populate_board(rows, sentences) {
+    rows.forEach((row, rowIndex) => {
+        console.log(sentences[rowIndex])
+        const letters = sentences[rowIndex].split("");
+        const puzzPieces = row.querySelectorAll('div');
+        
+        puzzPieces.forEach((piece, index) => {
+            const h4 = piece.querySelector('h4');
+            while (letters.length < 12) {
+                letters.unshift('');
+                letters.push('')
+            };
+            
+            if (h4) {
+                h4.textContent = index < letters.length ? letters[index] : "";
+                h4.style.color = "white" ;
+    
+            };
+            if (h4.textContent === " " || h4.textContent === "") {
+                piece.style.backgroundColor = "gray"
+            };
+        });
     });
 }
 
@@ -55,7 +86,7 @@ function make_guess(gamePieces, puzzPieces) {
                 setTimeout(() => {
                     const wagh = piece.querySelector('h4');
                     if (wagh && guessedLetter === wagh.textContent.toLowerCase()) {
-                        piece.style.backgroundColor = "gold"
+                        piece.style.backgroundColor = "gold";
                         wagh.style.color = "black";
                         wagh.style.fontWeight = "bold"; 
                         wagh.style.fontSize = "1.5rem";
@@ -85,7 +116,7 @@ function vowel_guess(vowelPieces, puzzPieces) {
             const guessedLetter = this.dataset.vowel;
             let correctGuess = false;
             let pointCount = 0;
-            gamePiece = this
+            gamePiece = this;
 
             console.log(`Guessed vowel: ${guessedLetter}`);
             
@@ -118,11 +149,11 @@ function vowel_guess(vowelPieces, puzzPieces) {
     })
 }
 
-function solve_puz(puzzPieces) {
+function solve_puzz(puzzPieces) {
     puzzPieces.forEach((piece) => {
         console.log('checking piece');
         const letter = piece.querySelector('h4');
-        if (piece.style.backgroundColor === "white") {
+        if (letter.textContent !== "" && letter.textContent !== " ") {
             piece.style.backgroundColor = "gold";
         };
         
@@ -372,7 +403,7 @@ function play_game(puzzPieces) {
         solveButton.addEventListener('click', () =>{
             spinButton.remove();
             buyVowelButton.remove();
-            solve_puz(puzzPieces);
+            solve_puzz(puzzPieces);
                 
             let solvePoints = pointStart + 20000
             pointHeading.textContent = `Points: ${solvePoints}`

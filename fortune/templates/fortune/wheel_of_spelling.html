@@ -30,9 +30,16 @@
 
 <div id="big-div" class="row">
     <div id="score-board" class="col-2">
-        <div class="col-1" id="button-div">
-            <button id="game-toggle"> Start game </button>
+        <div class="row" id="button-div">
+            <button class="col" id="game-toggle"> Start game </button>
+            <button class="col" id="new-puzz">Add a puzzle</button>
         </div>
+        <form id="new-puzz-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ newPuzz }}
+            
+            <input type="submit" value="New Puzzle">
+        </form>
         <div id="player-board" class="col">
             <h4></h4>
         </div>
@@ -40,28 +47,28 @@
 
     <div id="test-div" class="col">
         <div id="game-board" >
-            <div id="board-row-1" class="row" data-line1="{{puzz.line1}}">
+            <div id="board-row-1" class="row" data-line1="{{welcome_puzz.line1}}">
                 {% for n in grid %}
                     <div id="{{n}}" class="col-1">
                         <h4 style="font: bold 2rem;"></h4>
                     </div>
                 {% endfor %}
             </div>
-            <div id="board-row-2" class="row" data-line2="{{puzz.line2}}">
+            <div id="board-row-2" class="row" data-line2="{{welcome_puzz.line2}}">
                 {% for n in grid %}
                     <div id="{{n}}" class="col-1">
                         <h4 style="font: bold 2rem;"></h4>
                     </div>
                 {% endfor %}
             </div>
-            <div id="board-row-3" class="row" data-line3="{{puzz.line3}}">
+            <div id="board-row-3" class="row" data-line3="{{welcome_puzz.line3}}">
                 {% for n in grid %}
                     <div id="{{n}}" class="col-1">
                         <h4 style="font: bold 2rem;"></h4>
                     </div>
                 {% endfor %}
             </div>
-            <div id="board-row-4" class="row" data-line4="{{puzz.line4}}">
+            <div id="board-row-4" class="row" data-line4="{{welcome_puzz.line4}}">
                 {% for n in grid %}
                     <div id="{{n}}" class="col-1">
                         <h4 style="font: bold 2rem;"></h4>

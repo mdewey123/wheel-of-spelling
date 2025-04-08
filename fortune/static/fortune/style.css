@@ -12,6 +12,11 @@ body {
     display: none;
 }
 
+#new-puzz-form {
+    padding: 5%;
+    display: none;
+}
+
 #game-board {
     display: fixed;
     justify-content: center;
