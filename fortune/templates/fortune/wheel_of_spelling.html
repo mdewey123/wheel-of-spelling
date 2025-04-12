@@ -5,22 +5,7 @@
 <div id="title">
     <br>
         <h1>WHEEL OF SPELLING</h1>
-        {% if user.is_authenticated %}
-        <div id="puzzle-list">
-            <ul>
-                {% if puzzles %}
-                {% for puzz in puzzles %}
-                <li data-puzzle="{{puzz.sentence}}">{{ puzz }}</li>
-                {% endfor %}
-                {% endif %}
-            </ul>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ newPuzz }}
-                <input type="submit" value="New Puzzle">
-            </form>
-        </div>
-        {% endif %}
+        
 </div>
 <div id="game-wheel-container">
     <i class="arrow-down"></i>
@@ -31,13 +16,40 @@
 <div id="big-div" class="row">
     <div id="score-board" class="col-2">
         <div class="row" id="button-div">
-            <button class="col" id="game-toggle"> Start game </button>
-            <button class="col" id="new-puzz">Add a puzzle</button>
+            <button class="col-6" id="game-toggle"> Start game </button>
+            <button class="col-6" id="new-puzz">Add a puzzle</button>
         </div>
+        <br>
+        {% if user.is_authenticated %}
+        <div id="puzzle-list">
+            
+            <ul>
+                {% if puzzles %}
+                {% for puzz in puzzles %}
+                <li 
+                    data-line1="{{ puzz.line1 }}" 
+                    data-line2="{{ puzz.line2 }}" 
+                    data-line3="{{ puzz.line3 }}" 
+                    data-line4="{{ puzz.line4 }}">
+                    {{ puzz }}
+                </li>
+                {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+
         <form id="new-puzz-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ newPuzz }}
-            
+            {% for entry in newPuzz %}
+                <div class="form-group">
+                    {{ entry.label_tag }}
+                    {{ entry }}
+                    {% if entry.name in "line1 line2 line3 line4" %}
+                        <span class="char-counter" id="{{field.id}}-counter" >0/12</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
             <input type="submit" value="New Puzzle">
         </form>
         <div id="player-board" class="col">

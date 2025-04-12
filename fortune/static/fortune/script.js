@@ -7,10 +7,10 @@ addEventListener("DOMContentLoaded", function() {
     const gameToggle = document.getElementById("game-toggle")
 
     let rows = [
-        this.document.getElementById("board-row-1"),
-        this.document.getElementById("board-row-2"),
-        this.document.getElementById("board-row-3"),
-        this.document.getElementById("board-row-4"),
+        document.getElementById("board-row-1"),
+        document.getElementById("board-row-2"),
+        document.getElementById("board-row-3"),
+        document.getElementById("board-row-4"),
     ]
 
     let sentences = rows.map((row, index) => row.dataset[`line${index + 1}`])
@@ -24,13 +24,33 @@ addEventListener("DOMContentLoaded", function() {
 
     document.querySelector("#new-puzz").addEventListener("click", make_new_puzz);
     
-
+    if (rows.every(row => row !== null)) {
+        select_puzz(rows);
+    } else {
+        console.error("One or more row not found.");
+    }
 });
 
 function make_new_puzz() {
     document.querySelector("#new-puzz").style.display = 'none'
     document.querySelector('#new-puzz-form').style.display = "block"
-}
+    
+    const fieldNames = ["line1", "line2", "line3", "line4"];
+
+    fieldNames.forEach(name => {
+        const field = document.querySelector(`input[name="${name}"]`);
+        const counter = document.getElementById(field.id +"-counter");
+        
+        function updateCounter() {
+            counter.textContent = `${field.value.length}/12`
+            counter.style.color = field.value.length > 12 ? "red" : "black";
+        }
+    
+        field.addEventListener('input', updateCounter);
+        updateCounter();
+    });
+    
+};
 
 function populate_board_old(sentence, puzzPieces) {
     const letters = sentence.split("");
@@ -64,14 +84,33 @@ function populate_board(rows, sentences) {
             if (h4) {
                 h4.textContent = index < letters.length ? letters[index] : "";
                 h4.style.color = "white" ;
+            
     
             };
             if (h4.textContent === " " || h4.textContent === "") {
                 piece.style.backgroundColor = "gray"
+            } else {
+                piece.style.backgroundColor = "white"
             };
+            
         });
     });
 }
+
+function select_puzz(rows) {
+    document.querySelectorAll("#puzzle-list li").forEach(item => {
+        item.addEventListener('click', function() {
+            let line1 = this.dataset.line1 || "";
+            let line2 = this.dataset.line2 || "";
+            let line3 = this.dataset.line3 || "";
+            let line4 = this.dataset.line4 || "";
+            
+            let sentences = [line1, line2, line3, line4];
+            populate_board(rows, sentences);
+            
+        })
+    });
+};
 
 function make_guess(gamePieces, puzzPieces) {
     return new Promise((resolve) => {
@@ -273,12 +312,9 @@ function play_game(puzzPieces) {
     const playerBoard = document.getElementById("player-board")
     const scoreBoard = document.getElementById("score-board")
     const gamePieces = document.querySelectorAll('#game-pieces div')
-
-    function select_puzzle() {
-        playerBoard.querySelector('h4').textContent = "Which puzzle do you want to play?";
-
-        populate_board(puzzle, puzzPieces)
-    };
+    document.getElementById('puzzle-list').style.display = 'none'
+    document.getElementById('new-puzz').style.display = 'none'
+    document.getElementById('game-toggle').style.display = 'none'
 
     function player_query() {
         playerBoard.querySelector('h4').textContent = "How many players?"
