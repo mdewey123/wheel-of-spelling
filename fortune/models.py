@@ -32,14 +32,15 @@ class WosPuzz2(models.Model):
     return self.title
 
 class Student(models.Model):
+  teacher = models.ForeignKey(User, on_delete=CASCADE)  
   name = models.CharField(max_length=25)
   number = models.IntegerField(unique=True)
 
 class SchoolClass(models.Model):
-  user = models.ForeignKey(User, on_delete=CASCADE)
+  teacher = models.ForeignKey(User, on_delete=CASCADE)
   name = models.CharField(max_length=15)
   class Meta:
-    unique_together = ("user", "name")
+    unique_together = ("teacher", "name")
 
   def __str__(self):
     return f"{self.name} ({self.user.username})"
@@ -47,6 +48,7 @@ class SchoolClass(models.Model):
 class Enrolment(models.Model):
   school_class = models.ForeignKey(SchoolClass, on_delete=CASCADE)
   student = models.ForeignKey(Student, on_delete=CASCADE)
+  seating_position = models.IntegerField(unique=True)
 
   class Meta:
     unique_together = ("school_class", "student") 

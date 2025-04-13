@@ -111,3 +111,8 @@
 
 
 {% endblock %}
+
+{% block scripts %}
+    {{block.super}}
+    <script src="{% static 'fortune/wos.js' %}"></script>
+{% endblock %}

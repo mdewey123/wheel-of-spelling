@@ -1,0 +1,18 @@
+{% extends "fortune/layout.html" %}
+{% load static %}
+{% block body %}
+<h1>{{user.username}}'s classroom</h1>
+<div id="menu" class="row">
+
+</div>
+
+<div id="classroom-view" class="row">
+
+</div>
+
+{% endblock %}
+
+{%block scripts %}
+    {{block.super}}
+    <script src="{% static 'fortune/seating.js' %}"></script>
+{% endblock %}

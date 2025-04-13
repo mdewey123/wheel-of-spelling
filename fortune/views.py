@@ -94,5 +94,8 @@ def wheel_of_spelling(request):
        'welcome_puzz': welcome_puzz,
     })
 
-def class_lists(request, user):
-    return(request, 'fortune/class_lists.html')
+def class_lists(request):
+    user = request.user
+    return render(request, 'fortune/class_list.html', {
+        'user': user,
+    })
