@@ -141,5 +141,19 @@ body {
     background-color: blueviolet;
     position: fixed;
     right: 2%;
+    padding-top: 3px;
 
+}
+
+.desk {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.desk:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+    background-color: #e9ecef;
 }

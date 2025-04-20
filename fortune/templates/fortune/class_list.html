@@ -1,13 +1,20 @@
 {% extends "fortune/layout.html" %}
 {% load static %}
 {% block body %}
-<h1>  {{user.username}}'s classroom</h1>
-<div id="menu" class="row">
 
+<div id="menu" class="card"> <!-- make card list -->
+    <h1 class="card-header">{{user.username}}'s classroom</h1>
+    <ul class="list-group list-group-flush">
+        {% for class in classes %}
+        <li class="list-group-item">{{class}}</li>
+        {% endfor %}
 </div>
 
 <div id="classroom-view" class="row">
-
+    <div class="card-header">
+        <h2 id="current-room"></h2>
+        <h2 id="student-count"></h2>
+    </div>
 </div>
 
 {% endblock %}
