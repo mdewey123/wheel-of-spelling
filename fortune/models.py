@@ -48,7 +48,7 @@ class SchoolClass(models.Model):
 class Enrolment(models.Model):
   school_class = models.ForeignKey(SchoolClass, on_delete=CASCADE)
   student = models.ForeignKey(Student, on_delete=CASCADE)
-  seating_position = models.IntegerField(unique=True)
+  seating_position = models.IntegerField(unique=True, null=True)
 
   class Meta:
     unique_together = ("school_class", "student") 
