@@ -16,3 +16,16 @@ class MakeWOSPuzz(forms.ModelForm):
     line2 = forms.CharField(max_length=12, validators=[MaxLengthValidator(12)])
     line3 = forms.CharField(max_length=12, validators=[MaxLengthValidator(12)])
     line4 = forms.CharField(max_length=12, validators=[MaxLengthValidator(12)])
+
+class NewStudent(forms.ModelForm):
+    class Meta:
+        model = models.Student
+        fields = ['name', 'number']
+
+class NewRoom(forms.ModelForm):
+    model = models.SchoolClass
+    fields = ['name']
+
+class Enroll(forms.ModelForm):
+    model = models.Enrolment
+    fields = ['school_class', 'student', 'seating_position']

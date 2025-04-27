@@ -38,20 +38,45 @@ function load_seats(class_size) {
 
 }
 
+
+/* change so each card expands and becomes a form so can input student info that way?*/
 function add_room() {
-    room.innerHTML = ''
+    countDiv = document.getElementById('set-room-size');
+    currentRoomInput = document.getElementById('current-room-input');
+    btnDiv = document.getElementById('btn-div');
+    if (btnDiv) {
+        btnDiv.innerHTML = ''
+    };
+    if (currentRoomInput) {
+        currentRoomInput.remove()
+    };
+    if (countDiv) {
+        countDiv.remove();
+    };
+    room.innerHTML = '';
     counter();
     const desks = document.querySelectorAll('.desk');
     const roomName = document.createElement('input');
+    roomName.id = 'current-room-input'
     const classroom = document.querySelector('#current-room');
     classroom.querySelector('h2').innerHTML = `Class name: `;
     classroom.appendChild(roomName);
-
     const studentCount = document.querySelector('#student-count');
+    
+    const submitBtn = document.createElement('button')
+    submitBtn.className = 'btn btn-primary'
+    submitBtn.id = 'submit-new'
+    submitBtn.innerText = "Add new class list"
+    btnDiv.appendChild(submitBtn)
+
+  
 
     desks.forEach(desk => {
+        console.log('found a desk!')
+        body = desk.querySelector('.card-body')
+        body.innerHTML = ''
         const input = document.createElement('input');
-        desk.appendChild = input;
+        body.appendChild = input;
     });
 }
 
@@ -59,7 +84,7 @@ function counter(startSize = 42) {
     currentSize = startSize;
 
     const counter = document.createElement('div');
-    counter.id = 'student-count';
+    counter.id = 'set-room-size';
     counter.className = 'd-flex align-items-center justify-content-center gap-3 my-3';
 
     const minusBtn = document.createElement('button');
@@ -81,7 +106,7 @@ function counter(startSize = 42) {
     counter.appendChild(studentCount);
     counter.appendChild(plusBtn);
 
-    document.querySelector('#student-count').appendChild(counter)
+    document.getElementById('student-count').appendChild(counter)
 
     const minSize = 1;
     const maxSize = 46;

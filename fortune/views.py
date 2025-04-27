@@ -96,6 +96,9 @@ def wheel_of_spelling(request):
 
 def class_lists(request):
     user = request.user
+    student_form = NewStudent
+    classroom_form = NewRoom
+
     return render(request, 'fortune/class_list.html', {
         'user': user,
     })
