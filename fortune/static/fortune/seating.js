@@ -44,6 +44,7 @@ function add_room() {
     countDiv = document.getElementById('set-room-size');
     currentRoomInput = document.getElementById('current-room-input');
     btnDiv = document.getElementById('btn-div');
+
     if (btnDiv) {
         btnDiv.innerHTML = ''
     };
@@ -53,8 +54,11 @@ function add_room() {
     if (countDiv) {
         countDiv.remove();
     };
+
     room.innerHTML = '';
+
     counter();
+
     const desks = document.querySelectorAll('.desk');
     const roomName = document.createElement('input');
     roomName.id = 'current-room-input'
@@ -73,10 +77,10 @@ function add_room() {
 
     desks.forEach(desk => {
         console.log('found a desk!')
-        body = desk.querySelector('.card-body')
-        body.innerHTML = ''
+        const body = desk.querySelector('.card-body')
+        
         const input = document.createElement('input');
-        body.appendChild = input;
+        body.appendChild(input);
     });
 }
 
