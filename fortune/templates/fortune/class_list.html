@@ -6,7 +6,7 @@
     <h1 class="card-header">{{user.username}}'s classrooms</h1>
     <ul class="list-group list-group-flush">
         {% for class in classes %}
-        <li class="list-group-item">{{class}}</li>
+        <li class="list-group-item" data="{{class.}}">{{class}}</li>
         {% endfor %}
     <div id="btn-div">
         <button id="add-room" class="btn btn-primary">Add a class</button>

@@ -99,6 +99,10 @@ def class_lists(request):
     student_form = NewStudent
     classroom_form = NewRoom
 
+    classroom = SchoolClass.objects.filter(user = request.user)
+    enrollment = Enrolment.objects.filter(school_class is in classroom)
+
     return render(request, 'fortune/class_list.html', {
         'user': user,
+        'classes': enrollment
     })

@@ -2,6 +2,8 @@ addEventListener("DOMContentLoaded", function() {
     load_seats(42)
     console.log("Script loaded!");
     document.querySelector('#add-room').addEventListener('click', add_room)
+    document.querySelector('#edit-room').addEventListener('click', edit_room)
+    this.document.querySelectorAll('.classroom').addEventListener('click', load_room)
     
 });
 const room = document.querySelector('#classroom-view')
@@ -134,4 +136,13 @@ function counter(startSize = 42) {
     });
 
     load_seats(currentSize);
+}
+
+function edit_room(){
+
+}
+
+function load_room(){
+
+    load_seats
 }
