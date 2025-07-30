@@ -3,7 +3,9 @@ addEventListener("DOMContentLoaded", function() {
     console.log("Script loaded!");
     document.querySelector('#add-room').addEventListener('click', add_room)
     document.querySelector('#edit-room').addEventListener('click', edit_room)
-    this.document.querySelectorAll('.classroom').addEventListener('click', load_room)
+    document.querySelectorAll('.classroom').forEach(el => el.addEventListener('click', load_room)
+);
+
     
 });
 const room = document.querySelector('#classroom-view')
@@ -14,11 +16,10 @@ function load_seats(class_size) {
     */
    
     for (let i = 1 ; i <= class_size; i ++) {
-        const col = document.createElement('div');
-        col.className = 'col-2 mb-3';
+        
 
         const desk = document.createElement('div');
-        desk.className = 'card text-center shadow-sm desk';
+        desk.className = 'card text-center shadow-sm desk col-2 mb-2';
         desk.id = `desk-${i}`
 
         const deskBody = document.createElement('div');
@@ -30,13 +31,21 @@ function load_seats(class_size) {
 
         deskBody.appendChild(student);
         desk.appendChild(deskBody);
-        col.appendChild(desk);
-        room.appendChild(col);
+        
+        room.appendChild(desk);
+    
+        desk.addEventListener('click', () => {
+            const tag = event.target.tagName.toLowerCase();
+            if (tag === 'input' || tag === 'textarea') {
+                return;
+            } else {expand_desk(desk); }
+            });
     }
+    
 
 
-    let studentCount = document.querySelector("#student-count");
-    studentCount.innerhtml = `students: X of ${class_size}`;
+    //let studentCount = document.querySelector("#student-count");
+    //studentCount.innerHTML = `students: X of ${class_size}`;
 
 }
 
@@ -72,17 +81,88 @@ function add_room() {
     const submitBtn = document.createElement('button')
     submitBtn.className = 'btn btn-primary'
     submitBtn.id = 'submit-new'
-    submitBtn.innerText = "Add new class list"
+    submitBtn.innerText = "Submit new class list"
     btnDiv.appendChild(submitBtn)
 
-  
+    name_form();
+    submitBtn.addEventListener('click', () => {
+        const className = roomName.value.trim();
+        if (!className) {
+            alert("What class is this? please add a classroom name");
+            return;
+        }
 
+        desks.forEach((desk, index) => {
+            const name = desk.dataset.studentName;
+            const number = desk.dataset.studentNumber;
+
+            if (name && number) {
+                students.push({
+                    name: name,
+                    number: parseInt(number),
+                    position: index + 1
+                });
+            }
+        });
+
+        console.log("submitting new room. class: ", className, "students: ", students);
+
+        fetch('/save-class', {
+            method: 'POST',
+            headers: {
+                'content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                class_name: className,
+                students: students
+            })
+        }).then(res => res.json())
+           .then(data => alert("saved"))
+           .then (err => alert('error saving'));
+    });
+
+}
+
+function name_form() {
     desks.forEach(desk => {
         console.log('found a desk!')
-        const body = desk.querySelector('.card-body')
+        const body = desk.querySelector('.card-body');
+        const studentInput = document.createElement('input');
+        studentInput.className = 'student-name form-control';
+        studentInput.placeholder = 'Name';
+        const studentNumber = document.createElement('input');
+        studentNumber.className = 'student-number form-control';
+        studentNumber.placeholder = 'Student number';
         
-        const input = document.createElement('input');
-        body.appendChild(input);
+            desk.addEventListener('click', function(){
+
+
+            if (desk.classList.contains('expanded')) {
+            
+                desk.appendChild(studentInput).focus();
+                desk.appendChild(studentNumber);
+            
+            } else {
+                
+                const studNameVal = body.querySelector('.student-name')?.value.trim();
+                const studNumVal = body.querySelector('.student-number')?.value.trim();
+
+                const name = desk.CDATA_SECTION_NODE.studNameVal || '';
+                const studNum = desk.dataset.studNumVal;
+                
+                desk.removeChild(studentInput);
+                desk.removeChild(studentNumber);
+
+                body.innerHTML = `
+                <p class='card-text mb-0'>${studNameVal || ''} <br/> (ID: ${studNumVal || ''}) </p>
+                `;
+            }
+    
+            
+        });
+
+        
     });
 }
 
@@ -136,8 +216,16 @@ function counter(startSize = 42) {
     });
 
     load_seats(currentSize);
+    name_form();
+    //attach form event listener
 }
-
+function expand_desk(desk) {
+    if (desk.classList.contains('expanded')) {
+        desk.classList.remove('expanded');
+    } else {
+        desk.classList.toggle('expanded');
+    }
+}
 function edit_room(){
 
 }
@@ -145,4 +233,18 @@ function edit_room(){
 function load_room(){
 
     load_seats
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        for (let cookie of document.cookie.split(';')) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }

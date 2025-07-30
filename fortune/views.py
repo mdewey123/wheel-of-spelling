@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
+import json
 # Create your views here.
 
 
@@ -99,10 +100,49 @@ def class_lists(request):
     student_form = NewStudent
     classroom_form = NewRoom
 
-    classroom = SchoolClass.objects.filter(user = request.user)
-    enrollment = Enrolment.objects.filter(school_class is in classroom)
+    classroom = SchoolClass.objects.filter(teacher = request.user)
+    enrolment = Enrolment.objects.filter(school_class__in=classroom)
 
     return render(request, 'fortune/class_list.html', {
         'user': user,
-        'classes': enrollment
+        'classes': enrolment
     })
+
+def save_class(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "no POST request"}, status=400)
+
+    try:
+        data = json.loads(request.body)
+        class_name = data.get("class_name")
+        students = data.get("students")
+        user = request.user
+
+        if not class_name or not students:
+            return JsonResponse({"error": "Missing data."}, status=400)
+    
+        for student in students:
+            name = student["name"]
+            number = student["number"]
+            position = student["position"]
+
+            stu, _ = Student.objects.get_or_create(
+                teacher = user,
+                number = number,
+                defaults = {"name": name}
+            )
+            school_class, _ = SchoolClass.objects.get_or_create(
+                teacher=user,
+                name=class_name
+            )
+
+
+            Enrolment. objects.update_or_create(
+                school_class = school_class,
+                student = stu,
+                defaults = {"seating_position": position}
+            )
+            print('save view done')
+        return JsonResponse({"meassage": "Class saved."}), render(request, "fortune/class_lists.html")
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

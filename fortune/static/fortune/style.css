@@ -163,3 +163,8 @@ body {
     cursor: pointer;
     background-color: #165ca2;
 }
+
+.desk.expanded {
+    transform: scale(1.5);
+    background-color: #165ca2;
+}
