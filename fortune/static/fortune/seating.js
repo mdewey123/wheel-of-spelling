@@ -84,8 +84,9 @@ function add_room() {
     submitBtn.innerText = "Submit new class list"
     btnDiv.appendChild(submitBtn)
 
-    name_form();
+    name_form(desks);
     submitBtn.addEventListener('click', () => {
+        students = [];
         const className = roomName.value.trim();
         if (!className) {
             alert("What class is this? please add a classroom name");
@@ -119,12 +120,13 @@ function add_room() {
             })
         }).then(res => res.json())
            .then(data => alert("saved"))
-           .then (err => alert('error saving'));
+           .catch (err => alert('error saving'));
     });
 
 }
 
-function name_form() {
+function name_form(desks) {
+
     desks.forEach(desk => {
         console.log('found a desk!')
         const body = desk.querySelector('.card-body');
@@ -148,7 +150,7 @@ function name_form() {
                 const studNameVal = body.querySelector('.student-name')?.value.trim();
                 const studNumVal = body.querySelector('.student-number')?.value.trim();
 
-                const name = desk.CDATA_SECTION_NODE.studNameVal || '';
+                const name = desk.studNameVal || '';
                 const studNum = desk.dataset.studNumVal;
                 
                 desk.removeChild(studentInput);
