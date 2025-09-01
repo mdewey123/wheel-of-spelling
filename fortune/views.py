@@ -6,8 +6,9 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
+import traceback
 import json
-# Create your views here.
+
 
 
 def index(request):
@@ -95,19 +96,19 @@ def wheel_of_spelling(request):
        'welcome_puzz': welcome_puzz,
     })
 
+@login_required
 def class_lists(request):
     user = request.user
-    student_form = NewStudent
-    classroom_form = NewRoom
+ 
 
     classroom = SchoolClass.objects.filter(teacher = request.user)
-    enrolment = Enrolment.objects.filter(school_class__in=classroom)
 
     return render(request, 'fortune/class_list.html', {
         'user': user,
-        'classes': enrolment
+        'classes': classroom
     })
 
+@login_required
 def save_class(request):
     if request.method != "POST":
         return JsonResponse({"error": "no POST request"}, status=400)
@@ -120,29 +121,31 @@ def save_class(request):
 
         if not class_name or not students:
             return JsonResponse({"error": "Missing data."}, status=400)
-    
+        
+        school_class, _ = SchoolClass.objects.get_or_create(
+                teacher=user,
+                name=class_name
+            )
+        
         for student in students:
             name = student["name"]
             number = student["number"]
             position = student["position"]
-
-            stu, _ = Student.objects.get_or_create(
-                teacher = user,
-                number = number,
-                defaults = {"name": name}
-            )
-            school_class, _ = SchoolClass.objects.get_or_create(
-                teacher=user,
-                name=class_name
-            )
-
-
-            Enrolment. objects.update_or_create(
+            
+            Student.objects.update_or_create(
                 school_class = school_class,
-                student = stu,
-                defaults = {"seating_position": position}
+                number = number,
+                defaults = {
+                    "name": name, 
+                    "seating_position": position
+                    }
             )
+            
+
+
+            
             print('save view done')
-        return JsonResponse({"meassage": "Class saved."}), render(request, "fortune/class_lists.html")
+        return render(request, "fortune/class_list.html")
     except Exception as e:
+        print(traceback.format_exc())
         return JsonResponse({"error": str(e)}, status=500)

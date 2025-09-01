@@ -27,5 +27,5 @@ class NewRoom(forms.ModelForm):
     fields = ['name']
 
 class Enroll(forms.ModelForm):
-    model = models.Enrolment
-    fields = ['school_class', 'student', 'seating_position']
+    model = models.Student
+    fields = ['school_class', 'name', 'seating_position']

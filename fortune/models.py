@@ -31,10 +31,6 @@ class WosPuzz2(models.Model):
   def __str__(self):
     return self.title
 
-class Student(models.Model):
-  teacher = models.ForeignKey(User, on_delete=CASCADE)  
-  name = models.CharField(max_length=25)
-  number = models.IntegerField(unique=True)
 
 class SchoolClass(models.Model):
   teacher = models.ForeignKey(User, on_delete=CASCADE)
@@ -43,15 +39,19 @@ class SchoolClass(models.Model):
     unique_together = ("teacher", "name")
 
   def __str__(self):
-    return f"{self.name} ({self.user.username})"
+    return f"{self.name} ({self.teacher.username})"
   
-class Enrolment(models.Model):
+class Student(models.Model):
   school_class = models.ForeignKey(SchoolClass, on_delete=CASCADE)
-  student = models.ForeignKey(Student, on_delete=CASCADE)
-  seating_position = models.IntegerField(unique=True, null=True)
+  name = models.CharField(max_length=25)
+  number = models.IntegerField()
+  seating_position = models.IntegerField(null=True)
 
   class Meta:
-    unique_together = ("school_class", "student") 
-
+    unique_together = [
+      ("school_class", "number"),
+      ("school_class", "name", "number"),
+      
+    ]
   def __str__(self):
-    return f"{self.student.name} in {self.school_class.name}"
+    return f"{self.name} in {self.school_class.name}"

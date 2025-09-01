@@ -5,9 +5,9 @@
 <div id="menu" class="card"> <!-- make card list -->
     <h1 class="card-header">{{user.username}}'s classrooms</h1>
     <ul class="list-group list-group-flush">
-        {% if classes.isTrue %}
+        {% if classes %}
         {% for class in classes %}
-        <li class="list-group-item" data="{{class.id}}">{{class}}</li>
+        <li class="classname list-group-item" data-id="{{class.id}}">{{class.name}}</li>
         {% endfor %}
         {% endif %}
     <div id="btn-div">
