@@ -49,17 +49,21 @@ function load_seats(class_size) {
 }
 
 function populate_seats(classroom) {
-    const roomID = classroom.dataset.id.value;
-    
+    const roomID = classroom.dataset.id;
+    console.log("populate_seats called with:", classroom);
+    console.log("classroom.dataset.id:", roomID);
     fetch(`/get-class/${roomID}`)
         .then(response => response.json())
         .then(data => {
             room.innerHTML = '';
             const students = data.students;
-            load_seats(students.length);
+            const maxPosition = students.length > 0
+                ? Math.max(...students.map(s => s.position || 0))
+                : 0;
+    load_seats(maxPosition);
 
-            students.forEach((student, index) => {
-                const desk = document.getElementById(`desk-${index + 1}`);
+            students.forEach((student) => {
+                const desk = document.getElementById(`desk-${student.position + 1}`);
                 if (desk && desk.id == student.position) {
                     const body = desk.querySelector('.card-body');
                     body.innerHTML = `<p class="card-text mb-0">${student.name}, ${student.number}</p>`;
