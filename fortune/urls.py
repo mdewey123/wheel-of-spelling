@@ -11,4 +11,5 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("save-class", views.save_class, name="save_class"),
+    path("get-class/<int:class_id>", views.get_class, name="get_class"),
 ]

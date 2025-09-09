@@ -141,11 +141,22 @@ def save_class(request):
                     }
             )
             
-
-
-            
             print('save view done')
         return render(request, "fortune/class_list.html")
     except Exception as e:
         print(traceback.format_exc())
         return JsonResponse({"error": str(e)}, status=500)
+    
+@login_required
+def get_class(request, class_id):
+    students = Student.objects.filter(school_class=class_id).order_by('number')
+    data = {
+        "students": [
+            {
+                "name": student.name,
+                "number": student.number,
+                "position": student.seating_position
+            } for student in students
+        ]
+    }
+    return JsonResponse(data)

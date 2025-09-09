@@ -50,7 +50,25 @@ function load_seats(class_size) {
 
 function populate_seats(classroom) {
     const roomID = classroom.dataset.id.value;
+    
+    fetch(`/get-class/${roomID}`)
+        .then(response => response.json())
+        .then(data => {
+            room.innerHTML = '';
+            const students = data.students;
+            load_seats(students.length);
 
+            students.forEach((student, index) => {
+                const desk = document.getElementById(`desk-${index + 1}`);
+                if (desk && desk.id == student.position) {
+                    const body = desk.querySelector('.card-body');
+                    body.innerHTML = `<p class="card-text mb-0">${student.name}, ${student.number}</p>`;
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching class data:', error);
+        });
 }
 
 
