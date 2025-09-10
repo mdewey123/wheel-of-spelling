@@ -62,11 +62,12 @@ function populate_seats(classroom) {
                 : 0;
     load_seats(maxPosition);
 
-            students.forEach((student) => {
-                const desk = document.getElementById(`desk-${student.position + 1}`);
-                if (desk && desk.id == student.position) {
-                    const body = desk.querySelector('.card-body');
-                    body.innerHTML = `<p class="card-text mb-0">${student.name}, ${student.number}</p>`;
+        students.forEach((student) => {
+            const desk = document.getElementById(`desk-${student.position}`);
+            if (desk) {
+                console.log(`${student} is sitting at desk ${desk.id}`)
+                const body = desk.querySelector('.card-body');    
+                body.innerHTML = `<p class="card-text mb-0">${student.name}</p> <p>${student.number}</p>`;
                 }
             });
         })
