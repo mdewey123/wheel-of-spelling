@@ -63,14 +63,24 @@ function populate_seats(classroom) {
     load_seats(maxPosition);
 
         students.forEach((student) => {
-            const desk = document.getElementById(`desk-${student.position}`);
-            if (desk) {
-                console.log(`${student} is sitting at desk ${desk.id}`)
-                const body = desk.querySelector('.card-body');    
+            const studentDesk = document.getElementById(`desk-${student.position}`);   
+            if (studentDeskdesk) {
+                console.log(`${student} is sitting at desk ${studentDesk.id}`)
+                const body = studentDesk.querySelector('.card-body');    
                 body.innerHTML = `<p class="card-text mb-0">${student.name}</p> <p>${student.number}</p>`;
+                studentDesk.dataset.student = true;
                 }
+            
             });
         })
+        const desks = document.querySelectorAll('.desk');
+        desks.forEach(desk => {
+            if (!desk.dataset.student) {
+                const body = desk.querySelector('.card-body');
+                body.innerHTML = ''
+            }
+        })
+
         .catch(error => {
             console.error('Error fetching class data:', error);
         });
