@@ -136,7 +136,7 @@ body {
 }
 
 #classroom-card {
-    width: 65vw;
+    width: 70vw;
     height: 85vh;
     border: 2px solid black;
     background-color: blueviolet;
@@ -152,10 +152,14 @@ body {
 }
 
 .desk {
-    background-color: #e9ecef;
+    background-color: rgb(15, 67, 84);   
+    font: #e9ecef;
     border: 1px solid #dee2e6;
     border-radius: 0.5rem;
     transition: transform 0.2s;
+    box-sizing: border-box;
+    
+    min-height: 120px;
 }
 
 .desk:hover {
@@ -164,7 +168,16 @@ body {
     background-color: #165ca2;
 }
 
+.desk[data-student="true"] {
+  background-color: #e9ecef;
+  border: 1px solid #dee2e6;
+  font: 1em sans-serif;
+  transition: transform 0.2s;
+
+}
+
 .desk.expanded {
     transform: scale(1.5);
     background-color: #165ca2;
 }
+

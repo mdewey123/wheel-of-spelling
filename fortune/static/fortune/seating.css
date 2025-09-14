@@ -1,7 +1,5 @@
-.student-name{
+.desk[data-student="true"] {
+  background-color: rgb(15, 67, 84);   
+  font: 1em sans-serif;
 
-}
-
-.student-number{
-    
 }

@@ -1,11 +1,12 @@
 addEventListener("DOMContentLoaded", function() {
     load_seats(42)
     console.log("Script loaded!");
-    document.querySelector('#add-room').addEventListener('click', add_room)
-    document.querySelector('#edit-room').addEventListener('click', edit_room)
-    document.querySelectorAll('.classroom').forEach(el => {el.addEventListener('click', load_room)});
+    document.querySelector('#add-room').addEventListener('click', add_room);
+    document.querySelector('#edit-room').addEventListener('click', edit_room);
     document.querySelectorAll(".classname").forEach(el => {el.addEventListener('click', () => populate_seats(el));
     });
+    document.querySelector('#Partners').addEventListener('click', partner_button);
+    document.querySelector('#random').addEventListener('click', random_student);
 });
 const room = document.querySelector('#classroom-view')
 
@@ -16,9 +17,11 @@ function load_seats(class_size) {
    
     for (let i = 1 ; i <= class_size; i ++) {
         
-
+        const deskContainer = document.createElement('div');
+        deskContainer.className = 'col-2';
+       
         const desk = document.createElement('div');
-        desk.className = 'card text-center shadow-sm desk col-2 mb-2';
+        desk.className = 'text-center shadow-sm desk ';
         desk.id = `desk-${i}`
 
         const deskBody = document.createElement('div');
@@ -30,8 +33,8 @@ function load_seats(class_size) {
 
         deskBody.appendChild(student);
         desk.appendChild(deskBody);
-        
-        room.appendChild(desk);
+        deskContainer.appendChild(desk);
+        room.appendChild(deskContainer);
     
         desk.addEventListener('click', () => {
             const tag = event.target.tagName.toLowerCase();
@@ -43,8 +46,8 @@ function load_seats(class_size) {
     
 
 
-    //let studentCount = document.querySelector("#student-count");
-    //studentCount.innerHTML = `students: X of ${class_size}`;
+    let studentCount = document.querySelector("#student-count");
+    studentCount.innerHTML = `students: X of ${class_size}`;
 
 }
 
@@ -64,7 +67,7 @@ function populate_seats(classroom) {
 
         students.forEach((student) => {
             const studentDesk = document.getElementById(`desk-${student.position}`);   
-            if (studentDeskdesk) {
+            if (studentDesk) {
                 console.log(`${student} is sitting at desk ${studentDesk.id}`)
                 const body = studentDesk.querySelector('.card-body');    
                 body.innerHTML = `<p class="card-text mb-0">${student.name}</p> <p>${student.number}</p>`;
@@ -135,8 +138,7 @@ function add_room() {
             const numInput = desk.getElementsByClassName('student-number')[0];
             const studNameVal = nameInput.value?.trim();
             const studNumVal = numInput.value?.trim();
-            /*const name = desk.dataset.studentName;
-            const number = desk.dataset.studentNumber; */
+            
 
             if (studNameVal && studNumVal && !isNaN(studNumVal)) {
                 students.push({
@@ -282,9 +284,86 @@ function edit_room(){
 
 }
 
-function load_room(){
+function partner_button() {
+  
+    const desks = Array.from(document.querySelectorAll('.desk')).filter(desk => desk.dataset.student === "true");
+    if (desks.length < 2) {
+        alert("Not enough students to pair!");
+        return;
+    }
 
-    load_seats
+ 
+    for (let i = desks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [desks[i], desks[j]] = [desks[j], desks[i]];
+    }
+
+   
+   const colors = [
+    "#ffadad", "#ffd6a5", "#fdffb6", "#caffbf", "#9bf6ff", "#a0c4ff",
+    "#bdb2ff", "#ffc6ff", "#fffffc", "#e0aaff", "#b5ead7", "#ffdac1",
+    "#c7ceea", "#f6dfeb", "#f7b7a3", "#f1c0e8", "#b5ead7", "#caffbf",
+    "#f9c74f", "#90be6d", "#43aa8b", "#577590", "#f28482", "#bc6c25"
+];
+   
+    document.querySelectorAll('.desk').forEach(desk => {
+        desk.style.backgroundColor = "";
+    });
+
+
+    for (let i = 0; i < desks.length; i += 2) {
+        const color = colors[Math.floor(i / 2) % colors.length];
+        desks[i].style.backgroundColor = color;
+        if (desks[i + 1]) {
+            desks[i + 1].style.backgroundColor = color;
+        } else {
+          
+            desks[i].style.backgroundColor = "#cccccc";
+        }
+    }
+}
+
+function random_student() {
+    
+    const desks = Array.from(document.querySelectorAll('.desk')).filter(desk => desk.dataset.student === "true");
+    if (desks.length === 0) {
+        alert("No students to choose from!");
+        return;
+    }
+
+ 
+    desks.forEach(desk => {
+        desk.style.backgroundColor = "";
+    });
+
+ 
+    const randomIndex = Math.floor(Math.random() * desks.length);
+
+
+    let current = 0;
+    let prev = null;
+    const highlightColor = "#ffd700";
+    const cycleColor = "#b5ead7";
+    const duration = 1000 + Math.random() * 2000;
+    const intervalTime = 80;
+    const cycles = Math.floor(duration / intervalTime);
+    let count = 0;
+
+    const interval = setInterval(() => {
+       
+        if (prev !== null) desks[prev].style.backgroundColor = "";
+        desks[current].style.backgroundColor = cycleColor;
+        prev = current;
+        current = (current + 1) % desks.length;
+        count++;
+        if (count >= cycles) {
+            clearInterval(interval);
+        
+            desks[prev].style.backgroundColor = "";
+            
+            desks[randomIndex].style.backgroundColor = highlightColor;
+        }
+    }, intervalTime);
 }
 
 function getCookie(name) {
