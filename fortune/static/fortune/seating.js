@@ -7,6 +7,7 @@ addEventListener("DOMContentLoaded", function() {
     });
     document.querySelector('#Partners').addEventListener('click', partner_button);
     document.querySelector('#random').addEventListener('click', random_student);
+    this.document.querySelector('#edit-room').addEventListener('click', edit_room);
 });
 const room = document.querySelector('#classroom-view')
 
@@ -72,6 +73,8 @@ function populate_seats(classroom) {
                 const body = studentDesk.querySelector('.card-body');    
                 body.innerHTML = `<p class="card-text mb-0">${student.name}</p> <p>${student.number}</p>`;
                 studentDesk.dataset.student = true;
+                studentDesk.dataset.studentName = student.name;
+                studentDesk.dataset.studentNumber = student.number;
                 }
             
             });
@@ -173,7 +176,7 @@ function add_room() {
 
 }
 
- function name_form() {
+function name_form() {
     const desks = document.querySelectorAll('.desk');
     desks.forEach(desk => {
         console.log('found a desk!')
@@ -281,7 +284,26 @@ function expand_desk(desk) {
     }
 }
 function edit_room(){
+    const desks = document.querySelectorAll('.desk');
+        desks.forEach(desk => {
+            console.log('found a desk!');
+            const body = desk.querySelector('.card-body');
+            const existingName = desk.dataset.studentName || '';
+            const existingNumber = desk.dataset.studentNumber || '';
+            body.innerHTML = '';
 
+            const studentInput = document.createElement('input');
+            studentInput.className = 'student-name form-control';
+            studentInput.value = existingName;
+            studentInput.placeholder = 'Name';
+            body.appendChild(studentInput);
+
+            const studentNumber = document.createElement('input');
+            studentNumber.className = 'student-number form-control';
+            studentNumber.value = existingNumber;
+            studentNumber.placeholder = 'Number';
+            body.appendChild(studentNumber);
+        });
 }
 
 function partner_button() {
@@ -306,21 +328,48 @@ function partner_button() {
     "#f9c74f", "#90be6d", "#43aa8b", "#577590", "#f28482", "#bc6c25"
 ];
    
+    const flashColors = [
+        "#f72585", "#b5179e", "#7209b7", "#560bad", "#480ca8", "#3a0ca3",
+        "#4361ee", "#4cc9f0", "#4895ef", "#00b4d8", "#48cae4", "#90e0ef"
+    ];
+
     document.querySelectorAll('.desk').forEach(desk => {
         desk.style.backgroundColor = "";
     });
 
+    const duration = 1000 + Math.random() * 2000; 
+    const intervalTime = 80;
+    const cycles = Math.floor(duration / intervalTime);
+    let count = 0;
 
-    for (let i = 0; i < desks.length; i += 2) {
-        const color = colors[Math.floor(i / 2) % colors.length];
-        desks[i].style.backgroundColor = color;
-        if (desks[i + 1]) {
-            desks[i + 1].style.backgroundColor = color;
-        } else {
-          
-            desks[i].style.backgroundColor = "#cccccc";
+    const interval = setInterval(() => {
+        desks.forEach(desk => {
+            
+            desk.style.backgroundColor = flashColors[Math.floor(Math.random() * flashColors.length)];
+        });
+        count++;
+        if (count >= cycles) {
+            clearInterval(interval);
+
+            for (let i = desks.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [desks[i], desks[j]] = [desks[j], desks[i]];
+            }
+
+            desks.forEach(desk => desk.style.backgroundColor = "");
+
+        for (let i = 0; i < desks.length; i += 2) {
+            const color = colors[Math.floor(i / 2) % colors.length];
+            desks[i].style.backgroundColor = color;
+            if (desks[i + 1]) {
+                desks[i + 1].style.backgroundColor = color;
+            } else {
+            
+                desks[i].style.backgroundColor = "#cccccc";
+            }
         }
-    }
+        }
+    }, intervalTime);
 }
 
 function random_student() {
