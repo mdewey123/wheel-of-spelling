@@ -137,7 +137,7 @@ body {
 
 #classroom-card {
     width: 70vw;
-    height: 85vh;
+    max-height: 85vh;
     border: 2px solid black;
     background-color: blueviolet;
     position: fixed;
@@ -176,8 +176,8 @@ body {
 
 }
 
-.desk.expanded {
-    transform: scale(1.5);
-    background-color: #165ca2;
-}
 
+.desk[data-absent="true"] {
+  background-color: rgb(15, 67, 84);   
+
+}

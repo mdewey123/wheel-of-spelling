@@ -38,19 +38,14 @@ function load_seats(class_size) {
         deskContainer.appendChild(desk);
         room.appendChild(deskContainer);
     
-        desk.addEventListener('click', () => {
-            const tag = event.target.tagName.toLowerCase();
-            if (tag === 'input' || tag === 'textarea') {
-                return;
-            } else {expand_desk(desk); }
-            });
-    }
+        desk.addEventListener('click', absentent_toggle);
     
 
 
     let studentCount = document.querySelector("#student-count");
     studentCount.innerHTML = `students: X of ${class_size}`;
 
+    }
 }
 
 function populate_seats(classroom) {
@@ -98,7 +93,7 @@ function populate_seats(classroom) {
 }
 
 
-/* change so each card expands and becomes a form so can input student info that way?*/
+
 function add_room() {
     countDiv = document.getElementById('set-room-size');
     currentRoomInput = document.getElementById('current-room-input');
@@ -137,7 +132,7 @@ function add_room() {
 
 function save_class() {
     const desks = document.querySelectorAll('.desk');
-    const roomName = document.getElementById('room-name') || document.getElementById('current-room');
+    const roomName = document.getElementById('room-name') || document.getElementById('room-name-input');
     let students = [];
     const className = roomName.value.trim();
     if (!className) {
@@ -256,14 +251,15 @@ function counter(startSize = 42) {
     load_seats(currentSize);
     
 }
-
+ 
 function expand_desk(desk) {
     if (desk.classList.contains('expanded')) {
         desk.classList.remove('expanded');
     } else {
         desk.classList.toggle('expanded');
     }
-}
+} 
+
 
 function edit_room(){
     const desks = document.querySelectorAll('.desk');
@@ -297,21 +293,25 @@ function edit_room(){
     const currentRoomName = currentRoomHeader.textContent.replace('Class: ', '').replace('Class name: ', '').trim();
     currentRoomHeader.innerHTML = 'Class name: ';
 
-    const roomName = document.createElement('input');
-    roomName.id = 'room-name';
-    roomName.value = currentRoomName;
-    roomName.className = 'form-control d-inline-block w-auto ms-2';
-    currentRoomHeader.appendChild(roomName);
+    const prevRoomNameInput = document.getElementById('room-name-input');
+    if (!prevRoomNameInput) {
+    
+        const roomName = document.createElement('input');
+        roomName.id = 'room-name-input';
+        roomName.value = currentRoomName;
+        roomName.className = 'form-control d-inline-block w-auto ms-2';
+        currentRoomHeader.appendChild(roomName);
 
-    classroom.querySelector('h2').innerHTML = `Class name: `;
-    classroom.appendChild(roomName);
+        classroom.querySelector('h2').innerHTML = `Class name: `;
+        classroom.appendChild(roomName);
+    }
 
     const btnDiv = document.getElementById('btn-div');
     if (btnDiv) {btnDiv.innerHTML = ''}
     const submitBtn = document.createElement('button');
     submitBtn.className = 'btn btn-primary';
     submitBtn.id = 'submit-new';
-    submitBtn.innerText = "Submit new class list";
+    submitBtn.innerText = "Save changes";
     btnDiv.appendChild(submitBtn);
 
     submitBtn.addEventListener('click', save_class);
@@ -319,7 +319,7 @@ function edit_room(){
 
 function partner_button() {
   
-    const desks = Array.from(document.querySelectorAll('.desk')).filter(desk => desk.dataset.student === "true");
+    const desks = Array.from(document.querySelectorAll('.desk')).filter(desk => desk.dataset.student === "true" && desk.dataset.absent !== "true");
     if (desks.length < 2) {
         alert("Not enough students to pair!");
         return;
@@ -385,7 +385,7 @@ function partner_button() {
 
 function random_student() {
     
-    const desks = Array.from(document.querySelectorAll('.desk')).filter(desk => desk.dataset.student === "true");
+    const desks = Array.from(document.querySelectorAll('.desk')).filter(desk => desk.dataset.student === "true" && desk.dataset.absent !== "true");
     if (desks.length === 0) {
         alert("No students to choose from!");
         return;
@@ -443,14 +443,15 @@ function getCookie(name) {
 
 function shuffle_seating() {
     // Get all desks with students
-    const desks = Array.from(document.querySelectorAll('.desk')).filter(desk => desk.dataset.student === "true");
-    if (desks.length < 2) {
+    const desks = Array.from(document.querySelectorAll('.desk'));
+    seatCount = desks.length;
+    if (seatCount < 2) {
         alert("Not enough students to shuffle!");
         return;
     }
 
     // Shuffle desks
-    for (let i = desks.length - 1; i > 0; i--) {
+    for (let i = seatCount - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [desks[i], desks[j]] = [desks[j], desks[i]];
     }
@@ -464,9 +465,11 @@ function shuffle_seating() {
 
     // Update the DOM to reflect new seating
     room.innerHTML = '';
-    load_seats(desks.length);
+    load_seats(seatCount);
     shuffledStudents.forEach(student => {
+        if (!student.name) return; 
         const studentDesk = document.getElementById(`desk-${student.position}`);
+        console.log(`Placing ${student.name} at desk-${student.position}`);
         if (studentDesk) {
             const body = studentDesk.querySelector('.card-body');
             body.innerHTML = `<p class="card-text mb-0">${student.name}</p> <p>${student.number}</p>`;
@@ -475,24 +478,22 @@ function shuffle_seating() {
             studentDesk.dataset.studentNumber = student.number;
         }
     });
+    
+    edit_room();
+    
+    
+    
+}
 
-    // Send to backend to update models
-    fetch('/save-class', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({
-            class_name: document.getElementById('room-name')?.value || "",
-            students: shuffledStudents
-        })
-    }).then(response => {
-        if (response.ok) {
-            alert("Seating shuffled and saved!");
-            location.reload();
-        } else {
-            alert("Error saving shuffled seating.");
-        }
-    });
+function absentent_toggle(event) {
+    const desk = event.currentTarget;
+    if (desk.dataset.student !== "true") return;
+
+    if (desk.dataset.absent === "true") {
+        desk.dataset.absent="false";
+
+    } else {
+        desk.dataset.absent="true";
+        
+    }
 }

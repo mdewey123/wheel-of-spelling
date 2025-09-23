@@ -131,12 +131,13 @@ def save_class(request):
             name = student["name"]
             number = student["number"]
             position = student["position"]
+        
             
             Student.objects.update_or_create(
                 school_class = school_class,
                 number = number,
+                name = name,
                 defaults = {
-                    "name": name, 
                     "seating_position": position
                     }
             )

@@ -49,8 +49,7 @@ class Student(models.Model):
 
   class Meta:
     unique_together = [
-      ("school_class", "number"),
-      ("school_class", "name", "number"),
+      ("school_class", "number", "name"),
       
     ]
   def __str__(self):
